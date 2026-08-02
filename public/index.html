@@ -27,6 +27,8 @@
     html { scroll-behavior: smooth; }
 
     body {
+      position: relative;
+      isolation: isolate;
       margin: 0;
       min-height: 100vh;
       color: var(--text);
@@ -37,12 +39,41 @@
         var(--bg);
     }
 
+    .background-layer {
+      position: fixed;
+      inset: -2%;
+      z-index: -4;
+      opacity: 0;
+      pointer-events: none;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center center;
+      transform: scale(1.025);
+      filter: saturate(.92) contrast(1.03);
+      transition: opacity .65s ease;
+      will-change: opacity;
+    }
+
+    .background-layer.active { opacity: 1; }
+
+    .background-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(5,7,11,.48) 0%, rgba(5,7,11,.62) 42%, rgba(5,7,11,.88) 100%),
+        radial-gradient(900px 620px at 50% 16%, rgba(8,9,12,.05), rgba(8,9,12,.42) 74%);
+      transition: background .35s ease;
+    }
+
     body::before {
       content: "";
       position: fixed;
       inset: 0;
+      z-index: -2;
       pointer-events: none;
-      opacity: .20;
+      opacity: .16;
       background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
       background-size: 36px 36px;
       mask-image: linear-gradient(to bottom, black, transparent 65%);
@@ -50,6 +81,7 @@
 
     main {
       position: relative;
+      z-index: 1;
       width: min(900px, calc(100% - 32px));
       margin: 0 auto;
       padding: 56px 0 44px;
@@ -108,7 +140,7 @@
       padding: 12px;
       border: 1px solid var(--line);
       border-radius: 24px;
-      background: rgba(17,19,24,.82);
+      background: rgba(12,14,19,.82);
       box-shadow: var(--shadow);
       backdrop-filter: blur(18px);
     }
@@ -245,7 +277,7 @@
       padding: 18px;
       border: 1px solid var(--line);
       border-radius: 18px;
-      background: rgba(17,19,24,.62);
+      background: rgba(12,14,19,.70);
     }
 
     .site-title {
@@ -343,6 +375,10 @@
   </style>
 </head>
 <body>
+  <div id="backgroundLayerA" class="background-layer" aria-hidden="true"></div>
+  <div id="backgroundLayerB" class="background-layer" aria-hidden="true"></div>
+  <div class="background-overlay" aria-hidden="true"></div>
+
   <main>
     <div class="topbar">
       <div class="brand" aria-label="DLE Solver">
@@ -451,7 +487,7 @@
       </div>
     </section>
 
-    <footer>DLE Solver · v4.2</footer>
+    <footer>DLE Solver · v4.3</footer>
   </main>
 
   <iframe id="solverFrame" class="solver-frame" title="Motore DLE Solver" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
@@ -465,6 +501,78 @@
     const answer = document.querySelector("#answer");
     const meta = document.querySelector("#meta");
     const frame = document.querySelector("#solverFrame");
+    const backgroundLayers = [
+      document.querySelector("#backgroundLayerA"),
+      document.querySelector("#backgroundLayerB")
+    ];
+
+    const SITE_BACKGROUNDS = {
+      "onepiecedle.net": { src: "/backgrounds/onepiece.webp", position: "center center" },
+      "narutodle.net": { src: "/backgrounds/naruto.webp", position: "center center" },
+      "loldle.net": { src: "/backgrounds/lol.webp", position: "center top" },
+      "pokedle.net": { src: "/backgrounds/pokemon.webp", position: "center center" },
+      "dotadle.net": { src: "/backgrounds/dota.webp", position: "center center" },
+      "smashdle.net": { src: "/backgrounds/smash.webp", position: "center center" }
+    };
+
+    let activeBackgroundIndex = -1;
+    let activeBackgroundSrc = "";
+    let backgroundRequestId = 0;
+
+    function siteFromUrl(value) {
+      try {
+        const hostname = new URL(String(value || "").trim()).hostname
+          .toLowerCase()
+          .replace(/^www\./, "");
+        return SITE_BACKGROUNDS[hostname] || null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function clearSiteBackground() {
+      backgroundRequestId++;
+      activeBackgroundSrc = "";
+      activeBackgroundIndex = -1;
+      backgroundLayers.forEach(layer => layer?.classList.remove("active"));
+    }
+
+    function updateSiteBackground(value) {
+      const config = siteFromUrl(value);
+      if (!config) {
+        clearSiteBackground();
+        return;
+      }
+
+      if (activeBackgroundSrc === config.src) return;
+
+      const requestId = ++backgroundRequestId;
+      const image = new Image();
+
+      image.onload = () => {
+        if (requestId !== backgroundRequestId) return;
+
+        const nextIndex = activeBackgroundIndex === 0 ? 1 : 0;
+        const nextLayer = backgroundLayers[nextIndex];
+        const previousLayer = activeBackgroundIndex >= 0
+          ? backgroundLayers[activeBackgroundIndex]
+          : null;
+
+        nextLayer.style.backgroundImage = `url("${config.src}")`;
+        nextLayer.style.backgroundPosition = config.position || "center center";
+        nextLayer.classList.add("active");
+        previousLayer?.classList.remove("active");
+
+        activeBackgroundIndex = nextIndex;
+        activeBackgroundSrc = config.src;
+      };
+
+      image.onerror = () => {
+        if (requestId === backgroundRequestId) clearSiteBackground();
+      };
+
+      image.src = config.src;
+    }
 
     const EXACT_KEYS = [
       "todayAnswerDecrypted",
@@ -572,8 +680,17 @@
       link.addEventListener("click", event => {
         event.preventDefault();
         input.value = link.dataset.url;
+        updateSiteBackground(link.dataset.url);
         input.focus();
       });
+    });
+
+    input.addEventListener("input", () => {
+      updateSiteBackground(input.value);
+    });
+
+    input.addEventListener("paste", () => {
+      setTimeout(() => updateSiteBackground(input.value), 0);
     });
 
     function resetFrame() {
@@ -963,6 +1080,7 @@
       try {
         const parsed = new URL(rawUrl);
         activeUrl = parsed.href;
+        updateSiteBackground(activeUrl);
       } catch {
         result.className = "result show error";
         status.textContent = "Inserisci un link completo e valido.";

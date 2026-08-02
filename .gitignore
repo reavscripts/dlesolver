@@ -1,34 +1,5 @@
-# Dipendenze Node
-node_modules/
-
-# Variabili e segreti
+node_modules
 .env
-.env.*
-!.env.example
-
-# Log
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Cache
-.cache/
-.tmp/
-temp/
-.vercel/
-
-# File sistema operativo
+.vercel
 .DS_Store
-Thumbs.db
-desktop.ini
-
-# Editor
-.vscode/
-.idea/
-
-# Copie e archivi
-*.zip
-*.rar
-*.7z
+npm-debug.log*
