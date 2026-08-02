@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.4.0
+
+- Aggiunti i loghi dedicati per OnePieceDle, Narutodle, LoLdle, Pokédle, Dotadle e Smashdle.
+- Il testo introduttivo viene sostituito automaticamente dal logo del sito quando si seleziona o si incolla un link supportato.
+- Transizione morbida e layout responsive dei loghi.
+- Motore diretto v4.2 invariato.
+
 ## 4.3.0
 
 - Background dinamico dedicato per OnePieceDle, Narutodle, LoLdle, Pokédle, Dotadle e Smashdle.

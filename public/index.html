@@ -118,8 +118,57 @@
     .brand-mark svg { width: 17px; height: 17px; }
 
     .hero {
+      display: grid;
+      place-items: center;
+      min-height: 210px;
       text-align: center;
       margin-bottom: 30px;
+    }
+
+    .hero-intro,
+    .site-logo-shell {
+      grid-area: 1 / 1;
+      width: 100%;
+      transition: opacity .36s ease, transform .36s ease, visibility .36s ease;
+    }
+
+    .hero-intro {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    .site-logo-shell {
+      display: grid;
+      place-items: center;
+      min-height: 190px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px) scale(.97);
+      pointer-events: none;
+    }
+
+    .hero.has-site .hero-intro {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px) scale(.97);
+      pointer-events: none;
+    }
+
+    .hero.has-site .site-logo-shell {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    .site-logo {
+      display: block;
+      width: auto;
+      max-width: min(720px, 88vw);
+      max-height: 190px;
+      object-fit: contain;
+      filter: drop-shadow(0 18px 34px rgba(0,0,0,.48));
+      user-select: none;
     }
 
     h1 {
@@ -370,7 +419,10 @@
       button { width: 100%; }
       .site-grid { grid-template-columns: 1fr; }
       .section-head { align-items: flex-start; flex-direction: column; gap: 7px; }
+      .hero { min-height: 160px; }
       .hero p { font-size: .98rem; }
+      .site-logo-shell { min-height: 145px; }
+      .site-logo { max-width: 92vw; max-height: 135px; }
     }
   </style>
 </head>
@@ -393,9 +445,14 @@
       </div>
     </div>
 
-    <header class="hero">
-      <h1>La risposta, senza perdere tentativi.</h1>
-      <p>Incolla il link completo del riddle che vuoi risolvere.</p>
+    <header id="hero" class="hero">
+      <div id="heroIntro" class="hero-intro">
+        <h1>La risposta, senza perdere tentativi.</h1>
+        <p>Incolla il link completo del riddle che vuoi risolvere.</p>
+      </div>
+      <div id="siteLogoShell" class="site-logo-shell" aria-live="polite">
+        <img id="siteLogo" class="site-logo" alt="">
+      </div>
     </header>
 
     <section class="solver-card" aria-label="Trova risposta">
@@ -487,7 +544,7 @@
       </div>
     </section>
 
-    <footer>DLE Solver · v4.3</footer>
+    <footer>DLE Solver · v4.4</footer>
   </main>
 
   <iframe id="solverFrame" class="solver-frame" title="Motore DLE Solver" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
@@ -501,18 +558,50 @@
     const answer = document.querySelector("#answer");
     const meta = document.querySelector("#meta");
     const frame = document.querySelector("#solverFrame");
+    const hero = document.querySelector("#hero");
+    const siteLogo = document.querySelector("#siteLogo");
     const backgroundLayers = [
       document.querySelector("#backgroundLayerA"),
       document.querySelector("#backgroundLayerB")
     ];
 
-    const SITE_BACKGROUNDS = {
-      "onepiecedle.net": { src: "/backgrounds/onepiece.webp", position: "center center" },
-      "narutodle.net": { src: "/backgrounds/naruto.webp", position: "center center" },
-      "loldle.net": { src: "/backgrounds/lol.webp", position: "center top" },
-      "pokedle.net": { src: "/backgrounds/pokemon.webp", position: "center center" },
-      "dotadle.net": { src: "/backgrounds/dota.webp", position: "center center" },
-      "smashdle.net": { src: "/backgrounds/smash.webp", position: "center center" }
+    const SITE_THEMES = {
+      "onepiecedle.net": {
+        name: "OnePieceDle",
+        background: "/backgrounds/onepiece.webp",
+        backgroundPosition: "center center",
+        logo: "/logos/onepiecedle.webp"
+      },
+      "narutodle.net": {
+        name: "Narutodle",
+        background: "/backgrounds/naruto.webp",
+        backgroundPosition: "center center",
+        logo: "/logos/narutodle.png"
+      },
+      "loldle.net": {
+        name: "LoLdle",
+        background: "/backgrounds/lol.webp",
+        backgroundPosition: "center top",
+        logo: "/logos/loldle.webp"
+      },
+      "pokedle.net": {
+        name: "Pokédle",
+        background: "/backgrounds/pokemon.webp",
+        backgroundPosition: "center center",
+        logo: "/logos/pokedle.webp"
+      },
+      "dotadle.net": {
+        name: "Dotadle",
+        background: "/backgrounds/dota.webp",
+        backgroundPosition: "center center",
+        logo: "/logos/dotadle.png"
+      },
+      "smashdle.net": {
+        name: "Smashdle",
+        background: "/backgrounds/smash.webp",
+        backgroundPosition: "center center",
+        logo: "/logos/smashdle.png"
+      }
     };
 
     let activeBackgroundIndex = -1;
@@ -524,54 +613,77 @@
         const hostname = new URL(String(value || "").trim()).hostname
           .toLowerCase()
           .replace(/^www\./, "");
-        return SITE_BACKGROUNDS[hostname] || null;
+        return SITE_THEMES[hostname] || null;
       } catch (_) {
         return null;
       }
     }
 
-    function clearSiteBackground() {
+    function clearSiteTheme() {
       backgroundRequestId++;
       activeBackgroundSrc = "";
       activeBackgroundIndex = -1;
       backgroundLayers.forEach(layer => layer?.classList.remove("active"));
+      hero.classList.remove("has-site");
+      siteLogo.removeAttribute("src");
+      siteLogo.alt = "";
     }
 
-    function updateSiteBackground(value) {
+    function updateSiteTheme(value) {
       const config = siteFromUrl(value);
       if (!config) {
-        clearSiteBackground();
+        clearSiteTheme();
         return;
       }
 
-      if (activeBackgroundSrc === config.src) return;
-
       const requestId = ++backgroundRequestId;
-      const image = new Image();
+      const backgroundImage = new Image();
+      const logoImage = new Image();
 
-      image.onload = () => {
+      logoImage.onload = () => {
         if (requestId !== backgroundRequestId) return;
-
-        const nextIndex = activeBackgroundIndex === 0 ? 1 : 0;
-        const nextLayer = backgroundLayers[nextIndex];
-        const previousLayer = activeBackgroundIndex >= 0
-          ? backgroundLayers[activeBackgroundIndex]
-          : null;
-
-        nextLayer.style.backgroundImage = `url("${config.src}")`;
-        nextLayer.style.backgroundPosition = config.position || "center center";
-        nextLayer.classList.add("active");
-        previousLayer?.classList.remove("active");
-
-        activeBackgroundIndex = nextIndex;
-        activeBackgroundSrc = config.src;
+        siteLogo.src = config.logo;
+        siteLogo.alt = `Logo ${config.name}`;
+        hero.classList.add("has-site");
       };
 
-      image.onerror = () => {
-        if (requestId === backgroundRequestId) clearSiteBackground();
+      logoImage.onerror = () => {
+        if (requestId !== backgroundRequestId) return;
+        hero.classList.remove("has-site");
+        siteLogo.removeAttribute("src");
+        siteLogo.alt = "";
       };
 
-      image.src = config.src;
+      if (activeBackgroundSrc !== config.background) {
+        backgroundImage.onload = () => {
+          if (requestId !== backgroundRequestId) return;
+
+          const nextIndex = activeBackgroundIndex === 0 ? 1 : 0;
+          const nextLayer = backgroundLayers[nextIndex];
+          const previousLayer = activeBackgroundIndex >= 0
+            ? backgroundLayers[activeBackgroundIndex]
+            : null;
+
+          nextLayer.style.backgroundImage = `url("${config.background}")`;
+          nextLayer.style.backgroundPosition = config.backgroundPosition || "center center";
+          nextLayer.classList.add("active");
+          previousLayer?.classList.remove("active");
+
+          activeBackgroundIndex = nextIndex;
+          activeBackgroundSrc = config.background;
+        };
+
+        backgroundImage.onerror = () => {
+          if (requestId !== backgroundRequestId) return;
+          backgroundLayers.forEach(layer => layer?.classList.remove("active"));
+          activeBackgroundSrc = "";
+          activeBackgroundIndex = -1;
+        };
+
+        backgroundImage.src = config.background;
+      }
+
+      logoImage.src = config.logo;
     }
 
     const EXACT_KEYS = [
@@ -680,17 +792,17 @@
       link.addEventListener("click", event => {
         event.preventDefault();
         input.value = link.dataset.url;
-        updateSiteBackground(link.dataset.url);
+        updateSiteTheme(link.dataset.url);
         input.focus();
       });
     });
 
     input.addEventListener("input", () => {
-      updateSiteBackground(input.value);
+      updateSiteTheme(input.value);
     });
 
     input.addEventListener("paste", () => {
-      setTimeout(() => updateSiteBackground(input.value), 0);
+      setTimeout(() => updateSiteTheme(input.value), 0);
     });
 
     function resetFrame() {
@@ -1080,7 +1192,7 @@
       try {
         const parsed = new URL(rawUrl);
         activeUrl = parsed.href;
-        updateSiteBackground(activeUrl);
+        updateSiteTheme(activeUrl);
       } catch {
         result.className = "result show error";
         status.textContent = "Inserisci un link completo e valido.";

@@ -1,4 +1,4 @@
-# DLE Solver v4.3
+# DLE Solver v4.4
 
 Solver leggero compatibile con Vercel e Render. Per i sei siti supportati usa direttamente gli endpoint giornalieri e la stessa decifratura CryptoJS della rete DLE; non usa Puppeteer, Playwright o browser headless.
 
@@ -40,3 +40,7 @@ Il file `render.yaml` è già incluso. In alternativa:
 - `GET /api/solve?url=<link>&tzOffset=<minuti>`
 - `GET /api/health`
 - `/api/view` e `/api/proxy` restano disponibili solo come fallback per domini non mappati.
+
+## Interfaccia dinamica
+
+Quando viene selezionato o inserito un link supportato, il testo introduttivo viene sostituito dal logo del relativo sito e viene applicato lo sfondo dedicato.
