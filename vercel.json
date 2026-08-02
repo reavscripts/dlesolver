@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "functions": {
+    "api/view.js": {
+      "maxDuration": 20
+    },
+    "api/proxy.js": {
+      "maxDuration": 20
+    },
+    "api/solve.js": {
+      "maxDuration": 20
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/index.html"
+    }
+  ]
+}

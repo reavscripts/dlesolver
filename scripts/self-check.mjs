@@ -1,0 +1,153 @@
+import assert from "node:assert/strict";
+import crypto from "node:crypto";
+import { readFile } from "node:fs/promises";
+import vm from "node:vm";
+import { transformTargetHtml } from "../lib/runtime-proxy.js";
+import {
+  decryptCryptoJsOpenSsl,
+  getDirectSites,
+  solveDirect
+} from "../lib/direct-solver.js";
+
+const cases = [
+  ["https://onepiecedle.net/classic", "classic", "Monkey D. Luffy", "character_name"],
+  ["https://onepiecedle.net/devilfruit", "devilFruit", "Trafalgar D. Water Law", "character_name"],
+  ["https://onepiecedle.net/wanted", "wanted", "Nico Robin", "character_name"],
+  ["https://onepiecedle.net/laugh", "laugh", "Brook", "character_name"],
+
+  ["https://narutodle.net/classic", "classic", "Nagato", "champion_name"],
+  ["https://narutodle.net/jutsu", "jutsu", "Asura Otsutsuki", "champion_name"],
+  ["https://narutodle.net/quote", "quote", "Yahiko", "champion_name"],
+  ["https://narutodle.net/eye", "eye", "Kurama", "champion_name"],
+
+  ["https://loldle.net/classic", "classic", "Ahri", "champion_name"],
+  ["https://loldle.net/quote", "quote", "Jhin", "champion_name"],
+  ["https://loldle.net/ability", "ability", "Lux", "champion_name"],
+  ["https://loldle.net/emoji", "emoji", "Teemo", "champion_name"],
+  ["https://loldle.net/splash", "splash", "Yasuo", "champion_name"],
+
+  ["https://pokedle.net/classic", "classic", "Pikachu", "pokemon_name"],
+  ["https://pokedle.net/card", "card", "Charizard", "pokemon_name"],
+  ["https://pokedle.net/flavor", "flavor", "Mewtwo", "pokemon_name"],
+  ["https://pokedle.net/silhouette", "silhouette", "Gengar", "pokemon_name"],
+
+  ["https://dotadle.net/classic", "classic", "Invoker", "hero_name"],
+  ["https://dotadle.net/quote", "quote", "Pudge", "hero_name"],
+  ["https://dotadle.net/ability", "ability", "Crystal Maiden", "hero_name"],
+  ["https://dotadle.net/loadingscreen", "loadingScreen", "Juggernaut", "hero_name"],
+
+  ["https://smashdle.net/classic", "classic", "Mario", "fighter_name"],
+  ["https://smashdle.net/finalsmash", "finalSmash", "Kirby", "fighter_name"],
+  ["https://smashdle.net/kirby", "kirby", "Link", "fighter_name"],
+  ["https://smashdle.net/emoji", "emoji", "Pikachu", "fighter_name"],
+  ["https://smashdle.net/silhouette", "silhouette", "Samus", "fighter_name"]
+];
+
+const urls = cases.map(item => item[0]);
+const expectedByRequest = new Map();
+for (const [url, endpoint, answer, field] of cases) {
+  const target = new URL(url);
+  const apiHost = `${target.hostname.replace(/^www\./, "").split(".")[0]}.apimeko.link`;
+  expectedByRequest.set(`${apiHost}|${endpoint}`, { answer, field, url });
+}
+
+const indexHtml = await readFile(new URL("../public/index.html", import.meta.url), "utf8");
+for (const url of urls) {
+  assert.ok(indexHtml.includes(`data-url="${url}"`), `Link esempio mancante: ${url}`);
+}
+assert.ok(indexHtml.includes("const DIRECT_HOSTS = new Set"));
+assert.ok(indexHtml.includes("narutodle.net"));
+assert.ok(indexHtml.includes("smashdle.net"));
+
+for (const url of urls) {
+  const transformed = transformTargetHtml(
+    "<!doctype html><html><head></head><body><div id=\"app\"></div></body></html>",
+    new URL(url)
+  );
+  const match = transformed.match(/<script>([\s\S]*?)<\/script>/);
+  assert.ok(match, `Bootstrap runtime mancante per ${url}`);
+  new vm.Script(match[1], { filename: `${new URL(url).hostname}-${new URL(url).pathname}.js` });
+}
+
+function evpBytesToKey(password, salt, keyLength = 32, ivLength = 16) {
+  const passwordBytes = Buffer.from(password, "utf8");
+  const blocks = [];
+  let previous = Buffer.alloc(0);
+  let length = 0;
+  while (length < keyLength + ivLength) {
+    const hash = crypto.createHash("md5");
+    hash.update(previous);
+    hash.update(passwordBytes);
+    hash.update(salt);
+    previous = hash.digest();
+    blocks.push(previous);
+    length += previous.length;
+  }
+  const derived = Buffer.concat(blocks);
+  return {
+    key: derived.subarray(0, keyLength),
+    iv: derived.subarray(keyLength, keyLength + ivLength)
+  };
+}
+
+function encryptCryptoJs(text, password) {
+  const salt = Buffer.from("12345678", "ascii");
+  const { key, iv } = evpBytesToKey(password, salt);
+  const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+  const encrypted = Buffer.concat([cipher.update(text, "utf8"), cipher.final()]);
+  return Buffer.concat([Buffer.from("Salted__", "ascii"), salt, encrypted]).toString("base64");
+}
+
+// Conferma la chiave condivisa usando quattro valori reali Narutodle già acquisiti.
+assert.equal(decryptCryptoJsOpenSsl("U2FsdGVkX1+L9b49V/xEUrgEaRgXNoQ9XHj6OWF5CMM=", "QhDZJfngdx"), "Nagato");
+assert.equal(decryptCryptoJsOpenSsl("U2FsdGVkX19PSqossrJ/v668HPKxnaMmJSsk4QKYT8Q=", "QhDZJfngdx"), "Kurama");
+assert.equal(decryptCryptoJsOpenSsl("U2FsdGVkX18Tbd1iuIL051G4cBQvswbGQeE3MKxapXk=", "QhDZJfngdx"), "Asura Otsutsuki");
+assert.equal(decryptCryptoJsOpenSsl("U2FsdGVkX19j+Vj6OP1l2rtC8MxNk2dR6EXMYNgXuRM=", "QhDZJfngdx"), "Yahiko");
+
+const nativeFetch = globalThis.fetch;
+globalThis.fetch = async url => {
+  const parsed = new URL(String(url));
+  const match = parsed.pathname.match(/^\/games\/([^/]+)\/answer$/);
+
+  if (!match) {
+    return new Response("not found", { status: 404 });
+  }
+
+  const key = `${parsed.hostname}|${match[1]}`;
+  const expected = expectedByRequest.get(key);
+  if (!expected) {
+    return new Response("not found", { status: 404 });
+  }
+
+  assert.equal(parsed.searchParams.get("utc"), "2", `UTC errato per ${expected.url}`);
+  const payload = encryptCryptoJs(
+    JSON.stringify({ game_numero: 999, [expected.field]: expected.answer }),
+    "QhDZJfngdx"
+  );
+
+  return new Response(JSON.stringify({ data: payload }), {
+    status: 200,
+    headers: { "content-type": "application/json" }
+  });
+};
+
+try {
+  for (const [url, endpoint, expectedAnswer] of cases) {
+    const solved = await solveDirect(url, -120);
+    assert.equal(solved.success, true, url);
+    assert.equal(solved.answer, expectedAnswer, url);
+    assert.equal(solved.endpointName, endpoint, url);
+    assert.equal(solved.region, "europe", url);
+  }
+
+  const fallback = await solveDirect("https://example.com/classic", -120);
+  assert.equal(fallback.fallback, true);
+} finally {
+  globalThis.fetch = nativeFetch;
+}
+
+const directSites = getDirectSites();
+assert.equal(directSites.length, 6);
+assert.equal(directSites.reduce((sum, site) => sum + site.modes.length, 0), 26);
+
+console.log(`Self-check completato: ${cases.length} modalità dirette verificate su ${directSites.length} siti.`);
