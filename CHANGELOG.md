@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.11.0
+
+- Added Jujutsu Point as the 30th supported daily riddle.
+- Added a dedicated adapter for `https://jujutsudle.com/jujutsupoint/` that reads the official dated puzzle archive.
+- Matched the site's local `YYYY-MM-DD` selection and previous-puzzle fallback behavior.
+- Added Jujutsu Point links to all four language pages and expanded automated checks to 30 modes.
+
 ## 4.10.0
 
 - Added Jujutsudle Classic as the 29th supported daily riddle and the eighth supported website.

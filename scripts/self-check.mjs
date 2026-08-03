@@ -8,6 +8,7 @@ import {
   extractBleachdleCharacterNames,
   extractBleachdleWordlyRotation,
   extractJujutsudleCharacterNames,
+  extractJujutsupointPuzzle,
   getDirectSites,
   solveDirect
 } from "../lib/direct-solver.js";
@@ -49,11 +50,13 @@ const cases = [
 const bleachdleClassicUrl = "https://bleachdle.org/bleach.html";
 const bleachdleWordlyUrl = "https://bleachdle.org/bleach-wordly.htm";
 const jujutsudleClassicUrl = "https://jujutsudle.com/";
+const jujutsupointUrl = "https://jujutsudle.com/jujutsupoint/";
 const urls = [
   ...cases.map(item => item[0]),
   bleachdleClassicUrl,
   bleachdleWordlyUrl,
-  jujutsudleClassicUrl
+  jujutsudleClassicUrl,
+  jujutsupointUrl
 ];
 const expectedByRequest = new Map();
 for (const [url, endpoint, answer, field] of cases) {
@@ -75,6 +78,7 @@ assert.ok(indexHtml.includes('data-url="https://bleachdle.org/bleach-wordly.htm"
 assert.ok(indexHtml.includes('/backgrounds/bleach.webp'));
 assert.ok(indexHtml.includes('/logos/bleachdle.png'));
 assert.ok(indexHtml.includes('data-url="https://jujutsudle.com/"'));
+assert.ok(indexHtml.includes('data-url="https://jujutsudle.com/jujutsupoint/"'));
 assert.ok(indexHtml.includes('/backgrounds/jujutsudle.webp'));
 assert.ok(indexHtml.includes('/logos/jujutsudle.webp'));
 assert.ok(indexHtml.includes("<html lang=\"en\">"));
@@ -105,6 +109,7 @@ for (const [language, file, canonical] of localizedPages) {
   assert.ok(html.includes('/backgrounds/bleach.webp'));
   assert.ok(html.includes('/logos/bleachdle.png'));
   assert.ok(html.includes('data-url="https://jujutsudle.com/"'));
+  assert.ok(html.includes('data-url="https://jujutsudle.com/jujutsupoint/"'));
   assert.ok(html.includes('/backgrounds/jujutsudle.webp'));
   assert.ok(html.includes('/logos/jujutsudle.webp'));
   htmlPages.push([language, html]);
@@ -199,6 +204,32 @@ const parsedSyntheticJujutsudleNames = extractJujutsudleCharacterNames(
 );
 assert.deepEqual(parsedSyntheticJujutsudleNames, syntheticJujutsudleNames);
 
+const syntheticJujutsupointHistory = {
+  "2026-01-03": {
+    id: 3,
+    date: "2026-01-03",
+    category: "Yorozu",
+    clues: ["One", "Two", "Three", "Four", "Five"],
+    image: "/images/characters/jjk/yorozu.webp"
+  },
+  "2026-01-02": {
+    id: 2,
+    date: "2026-01-02",
+    category: "Choso",
+    clues: ["One", "Two", "Three", "Four", "Five"],
+    image: "/images/characters/jjk/choso.webp"
+  }
+};
+const syntheticJujutsupointJson = JSON.stringify(syntheticJujutsupointHistory);
+assert.equal(
+  extractJujutsupointPuzzle(syntheticJujutsupointJson, "2026-01-02").answer,
+  "Choso"
+);
+assert.equal(
+  extractJujutsupointPuzzle(syntheticJujutsupointJson, "2026-01-04").answer,
+  "Yorozu"
+);
+
 const syntheticWordlySolutions = Array.from(
   { length: 80 },
   (_, index) => index === 53 ? "rangiku-matsumoto" : `wordly-character-${index}`
@@ -228,6 +259,26 @@ function currentLocalDayOfYear(timezoneOffsetMinutes) {
       86_400_000
   ) + 1;
 }
+
+function currentLocalDateKey(timezoneOffsetMinutes) {
+  const shifted = new Date(Date.now() - timezoneOffsetMinutes * 60_000);
+  return [
+    shifted.getUTCFullYear(),
+    String(shifted.getUTCMonth() + 1).padStart(2, "0"),
+    String(shifted.getUTCDate()).padStart(2, "0")
+  ].join("-");
+}
+
+const currentJujutsupointDate = currentLocalDateKey(-120);
+const currentJujutsupointHistory = JSON.stringify({
+  [currentJujutsupointDate]: {
+    id: 112,
+    date: currentJujutsupointDate,
+    category: "Yorozu",
+    clues: ["One", "Two", "Three", "Four", "Five"],
+    image: "/images/characters/jjk/yorozu.webp"
+  }
+});
 
 const nativeFetch = globalThis.fetch;
 globalThis.fetch = async url => {
@@ -287,6 +338,16 @@ globalThis.fetch = async url => {
     return new Response(syntheticJujutsudleBundle, {
       status: 200,
       headers: { "content-type": "application/javascript" }
+    });
+  }
+
+  if (
+    parsed.hostname === "jujutsudle.com" &&
+    parsed.pathname === "/static/js/jujutsudle.json"
+  ) {
+    return new Response(currentJujutsupointHistory, {
+      status: 200,
+      headers: { "content-type": "application/json" }
     });
   }
 
@@ -365,6 +426,15 @@ try {
   assert.equal(jujutsudleSolved.endpointName, "classic");
   assert.equal(jujutsudleSolved.source, "jujutsudle-bundle");
 
+  const jujutsupointSolved = await solveDirect(jujutsupointUrl, -120);
+  assert.equal(jujutsupointSolved.success, true);
+  assert.equal(jujutsupointSolved.answer, "Yorozu");
+  assert.equal(jujutsupointSolved.gameNumero, 112);
+  assert.equal(jujutsupointSolved.puzzleDate, currentJujutsupointDate);
+  assert.equal(jujutsupointSolved.mode, "jujutsupoint");
+  assert.equal(jujutsupointSolved.endpointName, "jujutsupoint");
+  assert.equal(jujutsupointSolved.source, "jujutsudle-point-json");
+
   const fallback = await solveDirect("https://example.com/classic", -120);
   assert.equal(fallback.fallback, true);
 } finally {
@@ -373,6 +443,6 @@ try {
 
 const directSites = getDirectSites();
 assert.equal(directSites.length, 8);
-assert.equal(directSites.reduce((sum, site) => sum + site.modes.length, 0), 29);
+assert.equal(directSites.reduce((sum, site) => sum + site.modes.length, 0), 30);
 
-console.log(`Self-check completato: 29 modalità dirette verificate su ${directSites.length} siti.`);
+console.log(`Self-check completato: 30 modalità dirette verificate su ${directSites.length} siti.`);
