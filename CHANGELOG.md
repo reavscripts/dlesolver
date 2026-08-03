@@ -1,5 +1,18 @@
 # Changelog
 
+## 5.0.0
+
+- Expanded the solver from 31 to 53 verified daily modes and from 8 to 16 site configurations.
+- Added Narutodle.org Classic, NarutoPoint, Wordly and Uzumakidle.
+- Added Kimetsudle Classic and Wordly; Jojodle Classic, JoJoPoint, Wordly and Joestardle; Bluelockdle Classic and Wordly.
+- Added Genshindle Wordly, Genshinle Daily and Paimordle.
+- Added Animedle Onepiecedle Classic/Wordly and Dragonballdle Classic/Wordly.
+- Added OPMdle Classic/Wordly and Pokentions Daily Connections.
+- Added parsers for publisher character bundles, dated category archives, phrase archives, timestamp word lists, seeded Genshin abilities and four-group Connections puzzles.
+- Added official backgrounds and logos, path-aware Animedle themes and direct-host detection to all four language pages.
+- Excluded Unlimited, Endless, Match, random and non-daily games such as Cupcakes 2048.
+- Expanded synthetic checks to every new URL and all 53 supported modes.
+
 ## 4.12.0
 
 - Added Jujutsudle Wordly as the 31st supported daily riddle.

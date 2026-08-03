@@ -7,9 +7,14 @@ import {
   decryptCryptoJsOpenSsl,
   extractBleachdleCharacterNames,
   extractBleachdleWordlyRotation,
+  extractConnectionsPuzzle,
+  extractDailyPhraseRotation,
   extractJujutsudleCharacterNames,
   extractJujutsudleWordlyRotation,
   extractJujutsupointPuzzle,
+  extractPublisherCharacterNames,
+  extractSeededAbility,
+  extractTimestampWordRotation,
   getDirectSites,
   solveDirect
 } from "../lib/direct-solver.js";
@@ -53,13 +58,38 @@ const bleachdleWordlyUrl = "https://bleachdle.org/bleach-wordly.htm";
 const jujutsudleClassicUrl = "https://jujutsudle.com/";
 const jujutsupointUrl = "https://jujutsudle.com/jujutsupoint/";
 const jujutsudleWordlyUrl = "https://jujutsudle.com/jujutsu-wordly.htm";
+const publisherCases = [
+  ["https://narutodle.org/", "classic", "publisher-classic-bundle"],
+  ["https://narutodle.org/narutopoint/", "narutopoint", "publisher-dated-json"],
+  ["https://narutodle.org/naruto-wordly.htm", "wordly", "publisher-wordly-bundle"],
+  ["https://narutodle.org/uzumakidle/", "uzumakidle", "publisher-phrase-bundle"],
+  ["https://kimetsudle.com/", "classic", "publisher-classic-bundle"],
+  ["https://kimetsudle.com/kimetsu-wordly.htm", "wordly", "publisher-wordly-bundle"],
+  ["https://jojodle.com/", "classic", "publisher-classic-bundle"],
+  ["https://jojodle.com/jojopoint/", "jojopoint", "publisher-dated-json"],
+  ["https://jojodle.com/jojo-wordly.htm", "wordly", "publisher-wordly-bundle"],
+  ["https://jojodle.com/joestardle/", "joestardle", "publisher-phrase-bundle"],
+  ["https://bluelockdle.com/", "classic", "publisher-classic-bundle"],
+  ["https://bluelockdle.com/bluelock-wordly.htm", "wordly", "publisher-wordly-bundle"],
+  ["https://genshindle.org/", "wordly", "publisher-wordly-bundle"],
+  ["https://genshindle.org/genshinle-game/", "daily", "genshinle-seeded-json"],
+  ["https://genshindle.org/paimordle.html", "paimordle", "publisher-timestamp-word-bundle"],
+  ["https://animedle.org/onepiecedle/", "onepiececlassic", "publisher-classic-bundle"],
+  ["https://animedle.org/onepiecedle/onepiece-wordly.htm", "onepiecewordly", "publisher-wordly-bundle"],
+  ["https://animedle.org/dragonballdle/", "dragonballclassic", "publisher-classic-bundle"],
+  ["https://animedle.org/dragonballdle/dragonball-wordly.htm", "dragonballwordly", "publisher-wordly-bundle"],
+  ["https://opmdle.com/", "classic", "publisher-classic-bundle"],
+  ["https://opmdle.com/one-punch-man-wordly.htm", "wordly", "publisher-wordly-bundle"],
+  ["https://pokedoku.org/pokentions/", "daily", "pokentions-connections-json"]
+];
 const urls = [
   ...cases.map(item => item[0]),
   bleachdleClassicUrl,
   bleachdleWordlyUrl,
   jujutsudleClassicUrl,
   jujutsupointUrl,
-  jujutsudleWordlyUrl
+  jujutsudleWordlyUrl,
+  ...publisherCases.map(item => item[0])
 ];
 const expectedByRequest = new Map();
 for (const [url, endpoint, answer, field] of cases) {
@@ -85,6 +115,19 @@ assert.ok(indexHtml.includes('data-url="https://jujutsudle.com/jujutsupoint/"'))
 assert.ok(indexHtml.includes('data-url="https://jujutsudle.com/jujutsu-wordly.htm"'));
 assert.ok(indexHtml.includes('/backgrounds/jujutsudle.webp'));
 assert.ok(indexHtml.includes('/logos/jujutsudle.webp'));
+for (const asset of [
+  "/backgrounds/narutodle-org.webp",
+  "/backgrounds/kimetsudle.webp",
+  "/backgrounds/jojodle.webp",
+  "/backgrounds/bluelockdle.webp",
+  "/backgrounds/genshindle.webp",
+  "/backgrounds/animedle-onepiece.webp",
+  "/backgrounds/animedle-dragonball.jpg",
+  "/backgrounds/opmdle.webp",
+  "/logos/pokentions.png"
+]) {
+  assert.ok(indexHtml.includes(asset), `Asset tema mancante: ${asset}`);
+}
 assert.ok(indexHtml.includes("<html lang=\"en\">"));
 assert.ok(indexHtml.includes('rel="canonical" href="https://dlesolver.reav.website/"'));
 assert.ok(indexHtml.includes('hreflang="it" href="https://dlesolver.reav.website/it/"'));
@@ -117,6 +160,12 @@ for (const [language, file, canonical] of localizedPages) {
   assert.ok(html.includes('data-url="https://jujutsudle.com/jujutsu-wordly.htm"'));
   assert.ok(html.includes('/backgrounds/jujutsudle.webp'));
   assert.ok(html.includes('/logos/jujutsudle.webp'));
+  for (const [url] of publisherCases) {
+    assert.ok(html.includes(`data-url="${url}"`), `Link ${language} mancante: ${url}`);
+  }
+  assert.ok(html.includes('/backgrounds/animedle-onepiece.webp'));
+  assert.ok(html.includes('/backgrounds/animedle-dragonball.jpg'));
+  assert.ok(html.includes('/logos/pokentions.png'));
   htmlPages.push([language, html]);
 }
 
@@ -271,6 +320,74 @@ assert.equal(parsedSyntheticJujutsudleWordly.solutions.length, 70);
 assert.equal(parsedSyntheticJujutsudleWordly.solutions[41], "satoru-gojo");
 assert.equal(parsedSyntheticJujutsudleWordly.dayOffset, -22);
 
+const syntheticPublisherNames = Array.from(
+  { length: 48 },
+  (_, index) => index === 17 ? "Publisher Hero" : `Publisher Character ${index}`
+);
+const syntheticPublisherBundle =
+  `const heroes=[${syntheticPublisherNames.map(name => `{name:"${name}",hints:[]}`).join(",")}];` +
+  `function daily(){return heroes[dayOfYear(new Date())%heroes.length]}`;
+assert.deepEqual(
+  extractPublisherCharacterNames(syntheticPublisherBundle, "Publisher test"),
+  syntheticPublisherNames
+);
+
+const syntheticPhrasePuzzles = Array.from({ length: 40 }, (_, index) => ({
+  id: index + 500,
+  printDate: `Phrase day ${index}`,
+  solution: { text: `Daily phrase ${index}` }
+}));
+const syntheticPhraseBundle =
+  `var archive=JSON.parse(${JSON.stringify(JSON.stringify(syntheticPhrasePuzzles))});` +
+  `var base=new Date("2024-10-08"),elapsed=Date.now()-base.getTime();` +
+  `var selected=Math.floor(elapsed/864e5)%archive.length;`;
+const parsedSyntheticPhrase = extractDailyPhraseRotation(syntheticPhraseBundle);
+assert.equal(parsedSyntheticPhrase.puzzles.length, 40);
+assert.equal(parsedSyntheticPhrase.puzzles[17].solution.text, "Daily phrase 17");
+assert.equal(parsedSyntheticPhrase.baseYear, 2024);
+assert.equal(parsedSyntheticPhrase.baseMonth, 9);
+assert.equal(parsedSyntheticPhrase.baseDay, 8);
+
+const syntheticTimestampWords = Array.from(
+  { length: 64 },
+  (_, index) => index === 29 ? "origin" : `paimon${index}`
+);
+const syntheticTimestampBundle =
+  `var l=${JSON.stringify(syntheticTimestampWords)};` +
+  `var base=new Date(2022,2,11),r=123;` +
+  `var daily={solution:g(l[r%l.length])};`;
+const parsedSyntheticTimestamp = extractTimestampWordRotation(syntheticTimestampBundle);
+assert.equal(parsedSyntheticTimestamp.words.length, 64);
+assert.equal(parsedSyntheticTimestamp.words[29], "origin");
+assert.equal(parsedSyntheticTimestamp.baseYear, 2022);
+assert.equal(parsedSyntheticTimestamp.baseMonth, 2);
+assert.equal(parsedSyntheticTimestamp.baseDay, 11);
+
+const syntheticAbilities = Object.fromEntries(
+  Array.from({ length: 64 }, (_, index) => [`Hero${index}Skill`, { icon: `skill-${index}.webp` }])
+);
+const syntheticAbilitiesJson = JSON.stringify({
+  ...syntheticAbilities,
+  FOCALORSBurst: { icon: "excluded-burst.webp" },
+  FOCALORSSkill: { icon: "excluded-skill.webp" }
+});
+const parsedSyntheticAbility = extractSeededAbility(syntheticAbilitiesJson, "03-01-2026");
+assert.ok(parsedSyntheticAbility.answer.startsWith("Hero"));
+assert.notEqual(parsedSyntheticAbility.key, "FOCALORSBurst");
+assert.notEqual(parsedSyntheticAbility.key, "FOCALORSSkill");
+
+const syntheticConnectionGroups = Array.from({ length: 4 }, (_, groupIndex) => ({
+  number: groupIndex + 1,
+  theme: `Theme ${groupIndex + 1}`,
+  words: Array.from({ length: 4 }, (_, wordIndex) => `Pokemon ${groupIndex + 1}-${wordIndex + 1}`)
+}));
+const parsedSyntheticConnections = extractConnectionsPuzzle(
+  JSON.stringify({ 7: { groups: syntheticConnectionGroups } }),
+  7
+);
+assert.equal(parsedSyntheticConnections.groups.length, 4);
+assert.ok(parsedSyntheticConnections.answer.includes("Theme 4: Pokemon 4-1"));
+
 function currentLocalDayOfYear(timezoneOffsetMinutes) {
   const shifted = new Date(Date.now() - timezoneOffsetMinutes * 60_000);
   const year = shifted.getUTCFullYear();
@@ -300,6 +417,67 @@ const currentJujutsupointHistory = JSON.stringify({
     image: "/images/characters/jjk/yorozu.webp"
   }
 });
+
+const shiftedPublisherDate = new Date(Date.now() - -120 * 60_000);
+const currentPublisherSeedKey = [
+  String(shiftedPublisherDate.getUTCDate()).padStart(2, "0"),
+  String(shiftedPublisherDate.getUTCMonth() + 1).padStart(2, "0"),
+  shiftedPublisherDate.getUTCFullYear()
+].join("-");
+const currentPublisherArchive = JSON.stringify({
+  [currentJujutsupointDate]: {
+    id: 808,
+    date: currentJujutsupointDate,
+    category: "Daily Category",
+    clues: ["One", "Two", "Three", "Four", "Five"]
+  }
+});
+const currentConnectionsNumber = Math.floor(
+  (Date.UTC(
+    shiftedPublisherDate.getUTCFullYear(),
+    shiftedPublisherDate.getUTCMonth(),
+    shiftedPublisherDate.getUTCDate()
+  ) - Date.UTC(2023, 9, 1)) / 86_400_000
+);
+const currentConnectionsArchive = `\uFEFF${JSON.stringify({
+  [currentConnectionsNumber]: { groups: syntheticConnectionGroups }
+})}`;
+const expectedSeededAbility = extractSeededAbility(
+  syntheticAbilitiesJson,
+  currentPublisherSeedKey
+);
+
+const publisherPageScripts = new Map([
+  ["narutodle.org/narutodle-embed/", "/app/naruto/page-test.js"],
+  ["kimetsudle.com/demonslayer.html", "/app/demonslayer/page-test.js"],
+  ["jojodle.com/jojo.html", "/app/jojo/page-test.js"],
+  ["bluelockdle.com/bluelock.html", "/app/bluelock/page-test.js"],
+  ["animedle.org/onepiece.html", "/app/onepiece/page-test.js"],
+  ["animedle.org/dragonball.html", "/app/dragonball/page-test.js"],
+  ["opmdle.com/onepunchman.html", "/app/onepunchman/page-test.js"],
+  ["narutodle.org/naruto-wordly.htm", "/static/js/narutolev2.js"],
+  ["kimetsudle.com/kimetsu-wordly.htm", "/static/js/kimetsudlev2.js"],
+  ["jojodle.com/jojo-wordly.htm", "/static/js/jojodlev2.js"],
+  ["bluelockdle.com/bluelock-wordly.htm", "/static/js/bluelockdlev2.js"],
+  ["genshindle.org/", "/static/js/genshindlev2.js"],
+  ["animedle.org/onepiecedle/onepiece-wordly.htm", "/onepiecedle/static/js/onepiecedlev2.js"],
+  ["animedle.org/dragonballdle/dragonball-wordly.htm", "/dragonballdle/static/js/dragonballdlev2.js"],
+  ["opmdle.com/one-punch-man-wordly.htm", "/static/js/opmdlev2.js"],
+  ["narutodle.org/uzumakidle/", "/uzumakidle/static/js/uzumakidlev2.js"],
+  ["jojodle.com/joestardle/", "/joestardle/static/js/joestardlev2.js"],
+  ["genshindle.org/paimordle-embed/", "/paimordle-embed/static/js/main.test.js"]
+]);
+const publisherScriptBodies = new Map();
+for (const [pageKey, scriptPath] of publisherPageScripts) {
+  const hostname = pageKey.split("/")[0];
+  let body = syntheticPublisherBundle;
+  if (/wordly/i.test(pageKey) || pageKey === "genshindle.org/") {
+    body = syntheticWordlyBundle;
+  }
+  if (/uzumakidlev2|joestardlev2/i.test(scriptPath)) body = syntheticPhraseBundle;
+  if (/paimordle-embed/i.test(scriptPath)) body = syntheticTimestampBundle;
+  publisherScriptBodies.set(`${hostname}${scriptPath}`, body);
+}
 
 const nativeFetch = globalThis.fetch;
 globalThis.fetch = async url => {
@@ -389,6 +567,52 @@ globalThis.fetch = async url => {
     return new Response(syntheticJujutsudleWordlyBundle, {
       status: 200,
       headers: { "content-type": "application/javascript" }
+    });
+  }
+
+  const publisherKey = `${parsed.hostname}${parsed.pathname}`;
+  const publisherScript = publisherPageScripts.get(publisherKey);
+  if (publisherScript) {
+    return new Response(`<!doctype html><script src="${publisherScript}"></script>`, {
+      status: 200,
+      headers: { "content-type": "text/html" }
+    });
+  }
+
+  if (publisherScriptBodies.has(publisherKey)) {
+    return new Response(publisherScriptBodies.get(publisherKey), {
+      status: 200,
+      headers: { "content-type": "application/javascript" }
+    });
+  }
+
+  if (
+    (parsed.hostname === "narutodle.org" && parsed.pathname === "/static/js/narutodle.json") ||
+    (parsed.hostname === "jojodle.com" && parsed.pathname === "/static/js/jojodle.json")
+  ) {
+    return new Response(currentPublisherArchive, {
+      status: 200,
+      headers: { "content-type": "application/json" }
+    });
+  }
+
+  if (
+    parsed.hostname === "genshindle.org" &&
+    parsed.pathname === "/genshinle-game/abilities.json"
+  ) {
+    return new Response(syntheticAbilitiesJson, {
+      status: 200,
+      headers: { "content-type": "application/json" }
+    });
+  }
+
+  if (
+    parsed.hostname === "pokedoku.org" &&
+    parsed.pathname === "/pokentions/game-specs.json"
+  ) {
+    return new Response(currentConnectionsArchive, {
+      status: 200,
+      headers: { "content-type": "application/json" }
     });
   }
 
@@ -490,6 +714,51 @@ try {
   assert.equal(jujutsudleWordlySolved.endpointName, "wordly");
   assert.equal(jujutsudleWordlySolved.source, "jujutsudle-wordly-bundle");
 
+  const expectedPublisherClassic =
+    syntheticPublisherNames[currentLocalDayOfYear(-120) % syntheticPublisherNames.length];
+  const expectedPublisherWordly =
+    syntheticWordlySolutions[expectedWordlyIndex].toUpperCase();
+  const expectedPhraseIndex =
+    ((Math.floor((Date.now() - Date.UTC(2024, 9, 8)) / 86_400_000) %
+      syntheticPhrasePuzzles.length) + syntheticPhrasePuzzles.length) %
+    syntheticPhrasePuzzles.length;
+  const expectedPhrase = syntheticPhrasePuzzles[expectedPhraseIndex].solution.text;
+  const expectedTimestampIndex =
+    ((Math.floor((Date.UTC(
+      shiftedPublisherDate.getUTCFullYear(),
+      shiftedPublisherDate.getUTCMonth(),
+      shiftedPublisherDate.getUTCDate()
+    ) - Date.UTC(2022, 2, 11)) / 86_400_000) % syntheticTimestampWords.length) +
+      syntheticTimestampWords.length) % syntheticTimestampWords.length;
+  const expectedTimestamp = syntheticTimestampWords[expectedTimestampIndex].toUpperCase();
+
+  for (const [url, expectedMode, expectedSource] of publisherCases) {
+    const solved = await solveDirect(url, -120);
+    assert.equal(solved.success, true, url);
+    assert.equal(solved.mode, expectedMode, url);
+    assert.equal(solved.endpointName, expectedMode, url);
+    assert.equal(solved.source, expectedSource, url);
+    assert.equal(solved.region, "local", url);
+
+    if (expectedSource === "publisher-classic-bundle") {
+      assert.equal(solved.answer, expectedPublisherClassic, url);
+    } else if (expectedSource === "publisher-wordly-bundle") {
+      assert.equal(solved.answer, expectedPublisherWordly, url);
+    } else if (expectedSource === "publisher-dated-json") {
+      assert.equal(solved.answer, "Daily Category", url);
+      assert.equal(solved.gameNumero, 808, url);
+    } else if (expectedSource === "publisher-phrase-bundle") {
+      assert.equal(solved.answer, expectedPhrase, url);
+    } else if (expectedSource === "publisher-timestamp-word-bundle") {
+      assert.equal(solved.answer, expectedTimestamp, url);
+    } else if (expectedSource === "genshinle-seeded-json") {
+      assert.equal(solved.answer, expectedSeededAbility.answer, url);
+    } else if (expectedSource === "pokentions-connections-json") {
+      assert.equal(solved.answer, parsedSyntheticConnections.answer, url);
+      assert.equal(solved.gameNumero, currentConnectionsNumber, url);
+    }
+  }
+
   const fallback = await solveDirect("https://example.com/classic", -120);
   assert.equal(fallback.fallback, true);
 } finally {
@@ -497,7 +766,7 @@ try {
 }
 
 const directSites = getDirectSites();
-assert.equal(directSites.length, 8);
-assert.equal(directSites.reduce((sum, site) => sum + site.modes.length, 0), 31);
+assert.equal(directSites.length, 16);
+assert.equal(directSites.reduce((sum, site) => sum + site.modes.length, 0), 53);
 
-console.log(`Self-check completato: 31 modalità dirette verificate su ${directSites.length} siti.`);
+console.log(`Self-check completato: 53 modalità dirette verificate su ${directSites.length} siti.`);

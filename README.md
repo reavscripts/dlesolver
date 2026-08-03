@@ -1,8 +1,8 @@
-# DLE Solver v4.12
+# DLE Solver v5.0
 
-Solver leggero compatibile con Vercel e Render. Supporta otto siti DLE tramite endpoint giornalieri o adattatori che replicano la rotazione ufficiale; non usa Puppeteer, Playwright o browser headless.
+Solver leggero compatibile con Vercel e Render. Supporta 53 modalità giornaliere su 16 siti DLE tramite endpoint o adattatori che replicano la rotazione ufficiale; non usa Puppeteer, Playwright o browser headless.
 
-La versione 4.12 include:
+La versione 5.0 include:
 
 - conto alla rovescia prima della visualizzazione della risposta;
 - spazio pubblicitario durante l’attesa;
@@ -24,10 +24,19 @@ La versione 4.12 include:
 - Smashdle: Classic, Final Smash, Kirby, Emoji, Silhouette
 - Bleachdle: Classic, Wordly
 - Jujutsudle: Classic (la modalità usa la home `https://jujutsudle.com/`), Jujutsu Point, Wordly
+- Narutodle.org: Classic, NarutoPoint, Wordly, Uzumakidle
+- Kimetsudle: Classic, Wordly
+- Jojodle: Classic, JoJoPoint, Wordly, Joestardle
+- Bluelockdle: Classic, Wordly
+- Genshindle: Wordly, Genshinle Daily, Paimordle
+- Animedle Onepiecedle: Classic, Wordly
+- Animedle Dragonballdle: Classic, Wordly
+- OPMdle: Classic, Wordly
+- Pokentions: Daily Connections
 
-Le prime 26 modalità usano il rispettivo endpoint `/games/<modalità>/answer` e vengono restituite separatamente. Bleachdle Classic usa il bundle JavaScript ufficiale del gioco e applica la selezione basata sul giorno dell’anno. Bleachdle Wordly legge invece il proprio elenco di soluzioni dal bundle `bleachlev2.js` e replica la rotazione giornaliera basata sui giorni trascorsi dal 1° gennaio 2022. Jujutsudle Classic legge i personaggi dal bundle ufficiale incorporato da `/jujutsukaisen.html` e applica `giorno dell’anno % numero di personaggi`, come il gioco originale. Jujutsu Point legge l’archivio ufficiale `jujutsudle.json`, seleziona la data locale e restituisce il campo `category` del puzzle giornaliero. Jujutsudle Wordly legge l’elenco dal bundle ufficiale `jujutsudlev2.js` e replica la rotazione locale del gioco.
+Le prime 26 modalità usano il rispettivo endpoint `/games/<modalità>/answer`. Gli altri adattatori leggono esclusivamente dati e bundle pubblici dei giochi e replicano la loro logica giornaliera: giorno dell’anno per i Classic, archivi datati per le modalità Point, rotazioni Wordly, archivi di frasi per Uzumakidle e Joestardle, seed giornaliero per Genshinle Daily e numero progressivo per Pokentions.
 
-La modalità Unlimited di Bleachdle non è inclusa perché non è un riddle giornaliero.
+Non sono incluse le modalità Unlimited, Endless, Match e altri giochi casuali privi di una risposta giornaliera stabile. Per lo stesso motivo Cupcakes 2048, pur essendo collegato da Jujutsudle, non viene trattato come un DLE risolvibile.
 
 ## Avvio locale
 
