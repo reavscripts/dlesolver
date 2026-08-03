@@ -1,9 +1,9 @@
 {
   "name": "dle-solver",
-  "version": "4.7.1",
+  "version": "4.8.0",
   "private": true,
   "type": "module",
-  "description": "Direct API solver for the DLE network with runtime fallback for unmapped sites.",
+  "description": "Direct daily solver for seven DLE websites with multilingual UI, PayPal Premium and server-side answer gating.",
   "engines": {
     "node": ">=20"
   },

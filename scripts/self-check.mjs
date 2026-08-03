@@ -5,6 +5,7 @@ import vm from "node:vm";
 import { transformTargetHtml } from "../lib/runtime-proxy.js";
 import {
   decryptCryptoJsOpenSsl,
+  extractBleachdleCharacterNames,
   getDirectSites,
   solveDirect
 } from "../lib/direct-solver.js";
@@ -43,7 +44,8 @@ const cases = [
   ["https://smashdle.net/silhouette", "silhouette", "Samus", "fighter_name"]
 ];
 
-const urls = cases.map(item => item[0]);
+const bleachdleUrl = "https://bleachdle.org/";
+const urls = [...cases.map(item => item[0]), bleachdleUrl];
 const expectedByRequest = new Map();
 for (const [url, endpoint, answer, field] of cases) {
   const target = new URL(url);
@@ -58,6 +60,10 @@ for (const url of urls) {
 assert.ok(indexHtml.includes("const DIRECT_HOSTS = new Set"));
 assert.ok(indexHtml.includes("narutodle.net"));
 assert.ok(indexHtml.includes("smashdle.net"));
+assert.ok(indexHtml.includes("bleachdle.org"));
+assert.ok(indexHtml.includes('data-url="https://bleachdle.org/"'));
+assert.ok(indexHtml.includes('/backgrounds/bleach.webp'));
+assert.ok(indexHtml.includes('/logos/bleachdle.png'));
 assert.ok(indexHtml.includes("<html lang=\"en\">"));
 assert.ok(indexHtml.includes('rel="canonical" href="https://dlesolver.reav.website/"'));
 assert.ok(indexHtml.includes('hreflang="it" href="https://dlesolver.reav.website/it/"'));
@@ -81,6 +87,9 @@ for (const [language, file, canonical] of localizedPages) {
   assert.ok(html.includes('data-language-code="it"'));
   assert.ok(html.includes('data-language-code="fr"'));
   assert.ok(html.includes('data-language-code="es"'));
+  assert.ok(html.includes('data-url="https://bleachdle.org/"'));
+  assert.ok(html.includes('/backgrounds/bleach.webp'));
+  assert.ok(html.includes('/logos/bleachdle.png'));
   htmlPages.push([language, html]);
 }
 
@@ -147,9 +156,51 @@ assert.equal(decryptCryptoJsOpenSsl("U2FsdGVkX19PSqossrJ/v668HPKxnaMmJSsk4QKYT8Q
 assert.equal(decryptCryptoJsOpenSsl("U2FsdGVkX18Tbd1iuIL051G4cBQvswbGQeE3MKxapXk=", "QhDZJfngdx"), "Asura Otsutsuki");
 assert.equal(decryptCryptoJsOpenSsl("U2FsdGVkX19j+Vj6OP1l2rtC8MxNk2dR6EXMYNgXuRM=", "QhDZJfngdx"), "Yahiko");
 
+const syntheticBleachdleNames = Array.from(
+  { length: 80 },
+  (_, index) => index === 27 ? "Su\\xec-Fēng" : `Bleach Character ${index}`
+);
+const syntheticBleachdleBundle =
+  `let l=[${syntheticBleachdleNames.map(name => `{name:"${name}"}`).join(",")}];` +
+  `function u(){return l[g()]}function g(){return dayOfYear(new Date())%l.length}`;
+
+const parsedSyntheticBleachdleNames = extractBleachdleCharacterNames(
+  syntheticBleachdleBundle
+);
+assert.equal(parsedSyntheticBleachdleNames.length, 80);
+assert.equal(parsedSyntheticBleachdleNames[27], "Suì-Fēng");
+
+function currentLocalDayOfYear(timezoneOffsetMinutes) {
+  const shifted = new Date(Date.now() - timezoneOffsetMinutes * 60_000);
+  const year = shifted.getUTCFullYear();
+  return Math.floor(
+    (Date.UTC(year, shifted.getUTCMonth(), shifted.getUTCDate()) -
+      Date.UTC(year, 0, 1)) /
+      86_400_000
+  ) + 1;
+}
+
 const nativeFetch = globalThis.fetch;
 globalThis.fetch = async url => {
   const parsed = new URL(String(url));
+
+  if (parsed.hostname === "bleachdle.org" && parsed.pathname === "/bleach.html") {
+    return new Response(
+      '<!doctype html><script src="/_next/static/chunks/app/bleach/page-test.js"></script>',
+      { status: 200, headers: { "content-type": "text/html" } }
+    );
+  }
+
+  if (
+    parsed.hostname === "bleachdle.org" &&
+    parsed.pathname === "/_next/static/chunks/app/bleach/page-test.js"
+  ) {
+    return new Response(syntheticBleachdleBundle, {
+      status: 200,
+      headers: { "content-type": "application/javascript" }
+    });
+  }
+
   const match = parsed.pathname.match(/^\/games\/([^/]+)\/answer$/);
 
   if (!match) {
@@ -183,6 +234,17 @@ try {
     assert.equal(solved.region, "europe", url);
   }
 
+  const bleachdleSolved = await solveDirect(bleachdleUrl, -120);
+  const expectedBleachdleIndex =
+    currentLocalDayOfYear(-120) % syntheticBleachdleNames.length;
+  assert.equal(bleachdleSolved.success, true);
+  assert.equal(
+    bleachdleSolved.answer,
+    parsedSyntheticBleachdleNames[expectedBleachdleIndex]
+  );
+  assert.equal(bleachdleSolved.endpointName, "classic");
+  assert.equal(bleachdleSolved.source, "bleachdle-bundle");
+
   const fallback = await solveDirect("https://example.com/classic", -120);
   assert.equal(fallback.fallback, true);
 } finally {
@@ -190,7 +252,7 @@ try {
 }
 
 const directSites = getDirectSites();
-assert.equal(directSites.length, 6);
-assert.equal(directSites.reduce((sum, site) => sum + site.modes.length, 0), 26);
+assert.equal(directSites.length, 7);
+assert.equal(directSites.reduce((sum, site) => sum + site.modes.length, 0), 27);
 
-console.log(`Self-check completato: ${cases.length} modalità dirette verificate su ${directSites.length} siti.`);
+console.log(`Self-check completato: 27 modalità dirette verificate su ${directSites.length} siti.`);

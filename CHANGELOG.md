@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.8.0
+
+- Added Bleachdle Classic as the 27th supported daily riddle.
+- Added a dedicated Bleachdle adapter that reads the official Next.js character bundle and applies the game's day-of-year selection logic.
+- Added Bleachdle cards, direct-host detection, logo and background to all four language pages.
+- Expanded automated checks to seven sites and 27 daily modes.
+- Kept Bleachdle Wordly and Unlimited disabled until their separate game logic is captured and verified.
+
 ## 4.7.1
 
 - Changed the PayPal subscription button to the black theme for the dark Premium dialog.
