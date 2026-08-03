@@ -36,6 +36,8 @@ La versione 5.0 include:
 
 Le prime 26 modalità usano il rispettivo endpoint `/games/<modalità>/answer`. Gli altri adattatori leggono esclusivamente dati e bundle pubblici dei giochi e replicano la loro logica giornaliera: giorno dell’anno per i Classic, archivi datati per le modalità Point, rotazioni Wordly, archivi di frasi per Uzumakidle e Joestardle, seed giornaliero per Genshinle Daily e numero progressivo per Pokentions.
 
+Genshindle e OPMdle includono inoltre una copia locale verificata dei dati di rotazione: viene usata automaticamente soltanto quando il sito originale blocca le richieste provenienti dalla rete di deployment.
+
 Non sono incluse le modalità Unlimited, Endless, Match e altri giochi casuali privi di una risposta giornaliera stabile. Per lo stesso motivo Cupcakes 2048, pur essendo collegato da Jujutsudle, non viene trattato come un DLE risolvibile.
 
 ## Avvio locale

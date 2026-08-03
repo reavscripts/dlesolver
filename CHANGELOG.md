@@ -9,6 +9,7 @@
 - Added Animedle Onepiecedle Classic/Wordly and Dragonballdle Classic/Wordly.
 - Added OPMdle Classic/Wordly and Pokentions Daily Connections.
 - Added parsers for publisher character bundles, dated category archives, phrase archives, timestamp word lists, seeded Genshin abilities and four-group Connections puzzles.
+- Added verified local rotation fallbacks for Genshindle and OPMdle when their servers reject requests from the deployment network.
 - Added official backgrounds and logos, path-aware Animedle themes and direct-host detection to all four language pages.
 - Excluded Unlimited, Endless, Match, random and non-daily games such as Cupcakes 2048.
 - Expanded synthetic checks to every new URL and all 53 supported modes.

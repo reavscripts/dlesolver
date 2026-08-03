@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 import { transformTargetHtml } from "../lib/runtime-proxy.js";
+import { PUBLISHER_FALLBACKS } from "../lib/publisher-fallbacks.js";
 import {
   decryptCryptoJsOpenSsl,
   extractBleachdleCharacterNames,
@@ -478,6 +479,10 @@ for (const [pageKey, scriptPath] of publisherPageScripts) {
   if (/paimordle-embed/i.test(scriptPath)) body = syntheticTimestampBundle;
   publisherScriptBodies.set(`${hostname}${scriptPath}`, body);
 }
+assert.equal(PUBLISHER_FALLBACKS.genshindle.wordly.value.solutions.length, 70);
+assert.equal(PUBLISHER_FALLBACKS.genshindle.paimordle.value.words.length, 249);
+assert.equal(PUBLISHER_FALLBACKS.opmdle.classic.value.names.length, 99);
+assert.equal(PUBLISHER_FALLBACKS.opmdle.wordly.value.solutions.length, 99);
 
 const nativeFetch = globalThis.fetch;
 globalThis.fetch = async url => {
@@ -568,6 +573,10 @@ globalThis.fetch = async url => {
       status: 200,
       headers: { "content-type": "application/javascript" }
     });
+  }
+
+  if (parsed.hostname === "genshindle.org" || parsed.hostname === "opmdle.com") {
+    return new Response("forbidden in deployment environment", { status: 403 });
   }
 
   const publisherKey = `${parsed.hostname}${parsed.pathname}`;
@@ -739,6 +748,15 @@ try {
     assert.equal(solved.endpointName, expectedMode, url);
     assert.equal(solved.source, expectedSource, url);
     assert.equal(solved.region, "local", url);
+
+    const usesFallback = ["genshindle.org", "opmdle.com"].includes(
+      new URL(url).hostname
+    );
+    if (usesFallback) {
+      assert.ok(solved.answer, url);
+      assert.match(solved.bundle || solved.data || "", /\/(?:genshindle|opmdle)\//, url);
+      continue;
+    }
 
     if (expectedSource === "publisher-classic-bundle") {
       assert.equal(solved.answer, expectedPublisherClassic, url);
