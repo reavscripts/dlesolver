@@ -548,7 +548,26 @@
       background: rgba(255,107,122,.06);
     }
 
-    .paypal-buttons-shell { min-height: 44px; }
+    .paypal-buttons-shell {
+      min-height: 64px;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 18px;
+      overflow: hidden;
+      color-scheme: dark;
+      background: #090b0f;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+    }
+
+    .paypal-buttons-shell:empty {
+      display: none;
+    }
+
+    .paypal-buttons-shell iframe {
+      display: block;
+      max-width: 100%;
+      background: transparent !important;
+    }
 
     .premium-restore {
       margin-top: 14px;
@@ -1616,7 +1635,14 @@
         paypalButtons.textContent = "";
 
         await window.paypal.Buttons({
-          style: { shape: "pill", color: "gold", layout: "vertical", label: "subscribe" },
+          fundingSource: window.paypal.FUNDING.PAYPAL,
+          style: {
+            shape: "pill",
+            color: "black",
+            layout: "vertical",
+            label: "subscribe",
+            height: 48
+          },
           createSubscription(_data, actions) {
             return actions.subscription.create({
               plan_id: monetizationConfig.paypal.planId

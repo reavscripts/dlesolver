@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.7.1
+
+- Changed the PayPal subscription button to the black theme for the dark Premium dialog.
+- Limited the checkout launcher to the PayPal funding button to prevent light alternate-funding buttons.
+- Added a dark, bordered PayPal container with transparent iframe handling on all four language pages.
+
 ## 4.7.0
 
 - Added fully localized French (`/fr/`) and Spanish (`/es/`) versions.

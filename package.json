@@ -1,6 +1,6 @@
 {
   "name": "dle-solver",
-  "version": "4.7.0",
+  "version": "4.7.1",
   "private": true,
   "type": "module",
   "description": "Direct API solver for the DLE network with runtime fallback for unmapped sites.",

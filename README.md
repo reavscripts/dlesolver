@@ -109,3 +109,8 @@ Quando viene selezionato o inserito un link supportato, il testo introduttivo vi
 ## Lingua automatica
 
 La home inglese (`/`) legge `navigator.languages` e reindirizza alla variante italiana, francese o spagnola quando il browser dichiara una di queste lingue. Non viene usata la geolocalizzazione. Quando l’utente sceglie manualmente EN, IT, FR o ES, la preferenza viene salvata nel browser come `dleLanguagePreference` e prevale sul rilevamento automatico.
+
+
+## PayPal button theme
+
+The Premium dialog uses the black PayPal subscription button inside a dark container to match the site theme.
