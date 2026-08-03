@@ -8,6 +8,14 @@ import {
   proxyTargetRequest
 } from "./lib/runtime-proxy.js";
 import { solveDirect } from "./lib/direct-solver.js";
+import {
+  getPublicMonetizationConfig,
+  verifyPayPalSubscription
+} from "./lib/paypal-subscriptions.js";
+import {
+  gateSolveResult,
+  revealAnswerToken
+} from "./lib/monetization-tokens.js";
 
 const port = Number(process.env.PORT || 3000);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -81,7 +89,27 @@ const server = http.createServer(async (req, res) => {
     const requestUrl = new URL(req.url, `http://${req.headers.host || "localhost"}`);
 
     if (req.method === "GET" && requestUrl.pathname === "/api/health") {
-      sendJson(res, 200, { ok: true, service: "dle-solver", version: "4.4.0", engine: "direct-network-v4.2+runtime-proxy-v4.0" });
+      sendJson(res, 200, { ok: true, service: "dle-solver", version: "4.5.0", engine: "direct-network-v4.2+runtime-proxy-v4.0" });
+      return;
+    }
+
+    if (req.method === "GET" && requestUrl.pathname === "/api/config") {
+      sendJson(res, 200, { success: true, ...getPublicMonetizationConfig() });
+      return;
+    }
+
+    if (req.method === "POST" && requestUrl.pathname === "/api/paypal-verify") {
+      try {
+        const rawBody = await readRawBody(req, 64 * 1024);
+        const body = rawBody?.length ? JSON.parse(rawBody.toString("utf8")) : {};
+        const result = await verifyPayPalSubscription(body.subscriptionId);
+        sendJson(res, 200, { success: true, ...result });
+      } catch (error) {
+        sendJson(res, 422, {
+          success: false,
+          error: error?.message || "Verifica PayPal non riuscita."
+        });
+      }
       return;
     }
 
@@ -91,11 +119,27 @@ const server = http.createServer(async (req, res) => {
           requestUrl.searchParams.get("url"),
           requestUrl.searchParams.get("tzOffset")
         );
-        sendJson(res, 200, result);
+        const gatedResult = gateSolveResult(result, req.headers.authorization);
+        sendJson(res, 200, gatedResult);
       } catch (error) {
         sendJson(res, 422, {
           success: false,
           error: error?.message || "Impossibile ottenere la risposta."
+        });
+      }
+      return;
+    }
+
+    if (req.method === "POST" && requestUrl.pathname === "/api/reveal") {
+      try {
+        const rawBody = await readRawBody(req, 128 * 1024);
+        const body = rawBody?.length ? JSON.parse(rawBody.toString("utf8")) : {};
+        const result = revealAnswerToken(body.revealToken, req.headers.authorization);
+        sendJson(res, 200, { success: true, ...result });
+      } catch (error) {
+        sendJson(res, 422, {
+          success: false,
+          error: error?.message || "Impossibile sbloccare la risposta."
         });
       }
       return;

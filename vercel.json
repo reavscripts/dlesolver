@@ -9,6 +9,12 @@
     },
     "api/solve.js": {
       "maxDuration": 20
+    },
+    "api/paypal-verify.js": {
+      "maxDuration": 20
+    },
+    "api/reveal.js": {
+      "maxDuration": 20
     }
   },
   "rewrites": [

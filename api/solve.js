@@ -1,4 +1,5 @@
 import { solveDirect } from "../lib/direct-solver.js";
+import { gateSolveResult } from "../lib/monetization-tokens.js";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -9,8 +10,9 @@ export default async function handler(req, res) {
 
   try {
     const result = await solveDirect(req.query?.url, req.query?.tzOffset);
+    const gatedResult = gateSolveResult(result, req.headers.authorization);
     res.setHeader("cache-control", "no-store");
-    res.status(200).json(result);
+    res.status(200).json(gatedResult);
   } catch (error) {
     res.setHeader("cache-control", "no-store");
     res.status(422).json({

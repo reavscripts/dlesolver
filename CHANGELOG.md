@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.5.0
+
+- Aggiunto timer configurabile prima della visualizzazione della risposta.
+- Aggiunto spazio pubblicitario AdSense opzionale durante l’attesa.
+- Aggiunto abbonamento PayPal Premium con verifica server-side di stato e piano.
+- Aggiunta protezione server-side con token AES-256-GCM per le risposte gratuite.
+- Aggiunti endpoint `/api/config`, `/api/paypal-verify` e `/api/reveal` per Vercel e Render.
+- Aggiunta configurazione tramite variabili d’ambiente e file `.env.example`.
+
 ## 4.4.0
 
 - Aggiunti i loghi dedicati per OnePieceDle, Narutodle, LoLdle, Pokédle, Dotadle e Smashdle.

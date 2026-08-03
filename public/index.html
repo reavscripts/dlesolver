@@ -90,7 +90,8 @@
     .topbar {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      gap: 16px;
       margin-bottom: 56px;
     }
 
@@ -239,6 +240,30 @@
     button:active:not(:disabled) { transform: translateY(0); }
     button:disabled { opacity: .58; cursor: wait; }
 
+    [hidden] { display: none !important; }
+
+    .premium-trigger {
+      width: auto;
+      height: 42px;
+      padding: 0 15px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      color: #e8e9ee;
+      font-size: .82rem;
+      background: rgba(17,19,24,.78);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .premium-trigger.active {
+      color: #10130f;
+      border-color: rgba(54,214,138,.62);
+      background: linear-gradient(135deg, #6ce6a6, #36d68a);
+      box-shadow: 0 10px 28px rgba(54,214,138,.18);
+    }
+
+    .premium-trigger .sparkle { margin-right: 6px; }
+
     .result {
       display: none;
       margin-top: 10px;
@@ -291,6 +316,251 @@
     }
 
     .meta:empty { display: none; }
+
+
+    .result.waiting {
+      align-content: stretch;
+      border-color: rgba(139,92,246,.36);
+      background: linear-gradient(180deg, rgba(139,92,246,.08), rgba(79,140,255,.025));
+    }
+
+    .answer-gate {
+      margin-top: 16px;
+      text-align: left;
+    }
+
+    .gate-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 14px;
+    }
+
+    .gate-title {
+      margin: 0;
+      font-size: clamp(1.15rem, 4vw, 1.55rem);
+      letter-spacing: -.03em;
+    }
+
+    .gate-copy {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.45;
+    }
+
+    .countdown-badge {
+      flex: 0 0 auto;
+      width: 68px;
+      height: 68px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(139,92,246,.38);
+      border-radius: 50%;
+      color: white;
+      font-size: 1.35rem;
+      font-weight: 920;
+      background:
+        radial-gradient(circle, rgba(139,92,246,.23), rgba(79,140,255,.08) 64%, transparent 65%),
+        rgba(255,255,255,.025);
+      box-shadow: inset 0 0 0 6px rgba(255,255,255,.025);
+    }
+
+    .ad-shell {
+      position: relative;
+      min-height: 130px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      padding: 30px 16px 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(0,0,0,.18);
+    }
+
+    .ad-label {
+      position: absolute;
+      top: 9px;
+      left: 12px;
+      color: #6f7581;
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .ad-fallback {
+      color: #777e8b;
+      text-align: center;
+      font-size: .86rem;
+      line-height: 1.45;
+    }
+
+    .adsbygoogle {
+      width: 100%;
+      min-height: 90px;
+    }
+
+    .gate-premium-button {
+      width: 100%;
+      height: 48px;
+      margin-top: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      color: #e9eaf0;
+      background: rgba(255,255,255,.055);
+      box-shadow: none;
+    }
+
+    .premium-dialog {
+      width: min(520px, calc(100% - 28px));
+      max-height: calc(100vh - 32px);
+      overflow: auto;
+      padding: 0;
+      border: 1px solid var(--line-strong);
+      border-radius: 24px;
+      color: var(--text);
+      background: #111318;
+      box-shadow: 0 34px 120px rgba(0,0,0,.68);
+    }
+
+    .premium-dialog::backdrop {
+      background: rgba(3,4,7,.78);
+      backdrop-filter: blur(7px);
+    }
+
+    .premium-dialog-inner { padding: 26px; }
+
+    .dialog-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+    }
+
+    .premium-kicker {
+      margin: 0 0 7px;
+      color: #b9a8ff;
+      font-size: .74rem;
+      font-weight: 850;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .premium-dialog h2 {
+      margin: 0;
+      font-size: clamp(1.7rem, 6vw, 2.25rem);
+      line-height: 1.02;
+    }
+
+    .premium-dialog-copy {
+      margin: 12px 0 20px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .dialog-close {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: #d7d9df;
+      font-size: 1.25rem;
+      background: rgba(255,255,255,.045);
+      box-shadow: none;
+    }
+
+    .premium-benefits {
+      display: grid;
+      gap: 9px;
+      margin: 0 0 20px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .premium-benefits li {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      color: #e4e6eb;
+      font-size: .92rem;
+    }
+
+    .premium-benefits li::before {
+      content: "✓";
+      width: 23px;
+      height: 23px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #08140d;
+      font-size: .75rem;
+      font-weight: 950;
+      background: var(--success);
+    }
+
+    .premium-state {
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.45;
+      background: rgba(255,255,255,.025);
+    }
+
+    .premium-state.success {
+      color: #baf4d5;
+      border-color: rgba(54,214,138,.35);
+      background: rgba(54,214,138,.07);
+    }
+
+    .premium-state.error {
+      color: #ffb9c0;
+      border-color: rgba(255,107,122,.32);
+      background: rgba(255,107,122,.06);
+    }
+
+    .paypal-buttons-shell { min-height: 44px; }
+
+    .premium-restore {
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+
+    .premium-restore summary {
+      color: #c8cbd3;
+      font-size: .85rem;
+      font-weight: 760;
+      cursor: pointer;
+    }
+
+    .restore-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      margin-top: 11px;
+    }
+
+    .restore-row input,
+    .restore-row button {
+      height: 46px;
+      border-radius: 13px;
+    }
+
+    .restore-row button { padding: 0 16px; }
+
+    .premium-note {
+      margin: 14px 0 0;
+      color: #737986;
+      font-size: .76rem;
+      line-height: 1.45;
+      text-align: center;
+    }
 
     .tutorial {
       margin-top: 54px;
@@ -415,8 +685,13 @@
     @media (max-width: 720px) {
       main { padding: 28px 0 34px; }
       .topbar { margin-bottom: 38px; }
+      .premium-trigger { width: auto; }
       form { grid-template-columns: 1fr; }
       button { width: 100%; }
+      .dialog-close { width: 38px; }
+      .restore-row { grid-template-columns: 1fr; }
+      .gate-head { align-items: flex-start; }
+      .countdown-badge { width: 58px; height: 58px; font-size: 1.16rem; }
       .site-grid { grid-template-columns: 1fr; }
       .section-head { align-items: flex-start; flex-direction: column; gap: 7px; }
       .hero { min-height: 160px; }
@@ -443,6 +718,9 @@
         </span>
         DLE Solver
       </div>
+      <button id="premiumButton" class="premium-trigger" type="button" aria-haspopup="dialog">
+        <span class="sparkle" aria-hidden="true">✦</span><span id="premiumButtonText">Premium</span>
+      </button>
     </div>
 
     <header id="hero" class="hero">
@@ -465,6 +743,21 @@
         <div id="status" class="status"></div>
         <div id="answer" class="answer"></div>
         <div id="meta" class="meta"></div>
+        <div id="answerGate" class="answer-gate" hidden>
+          <div class="gate-head">
+            <div>
+              <h3 class="gate-title">La risposta è pronta</h3>
+              <p class="gate-copy">Resta su questa pagina durante il breve messaggio pubblicitario.</p>
+            </div>
+            <div id="countdownBadge" class="countdown-badge" aria-label="Secondi rimanenti">15</div>
+          </div>
+          <div class="ad-shell">
+            <span class="ad-label">Pubblicità</span>
+            <div id="adFallback" class="ad-fallback">Spazio pubblicitario<br>Configura il tuo circuito annunci dal server.</div>
+            <ins id="adsenseSlot" class="adsbygoogle" hidden></ins>
+          </div>
+          <button id="gatePremiumButton" class="gate-premium-button" type="button">Salta attesa e pubblicità con Premium</button>
+        </div>
       </div>
     </section>
 
@@ -544,8 +837,36 @@
       </div>
     </section>
 
-    <footer>DLE Solver · v4.4</footer>
+    <footer>DLE Solver · v4.5</footer>
   </main>
+
+  <dialog id="premiumDialog" class="premium-dialog" aria-labelledby="premiumTitle">
+    <div class="premium-dialog-inner">
+      <div class="dialog-top">
+        <div>
+          <p class="premium-kicker">DLE Solver Premium</p>
+          <h2 id="premiumTitle">Risposte immediate.</h2>
+        </div>
+        <button id="closePremiumDialog" class="dialog-close" type="button" aria-label="Chiudi">×</button>
+      </div>
+      <p class="premium-dialog-copy">Attiva l’abbonamento con PayPal per saltare automaticamente timer e pubblicità su questo dispositivo.</p>
+      <ul class="premium-benefits">
+        <li>Nessuna attesa prima della risposta</li>
+        <li>Nessun riquadro pubblicitario</li>
+        <li>Verifica sicura dell’abbonamento PayPal</li>
+      </ul>
+      <div id="premiumState" class="premium-state">Caricamento disponibilità Premium…</div>
+      <div id="paypalButtons" class="paypal-buttons-shell"></div>
+      <details class="premium-restore">
+        <summary>Hai già un abbonamento? Ripristinalo</summary>
+        <div class="restore-row">
+          <input id="subscriptionIdInput" type="text" autocomplete="off" spellcheck="false" placeholder="ID PayPal, es. I-XXXXXXXXXXXX">
+          <button id="restorePremiumButton" type="button">Verifica</button>
+        </div>
+      </details>
+      <p class="premium-note">Il prezzo, il rinnovo e l’eventuale prova sono quelli configurati nel piano PayPal. L’abbonamento può essere gestito dal proprio account PayPal.</p>
+    </div>
+  </dialog>
 
   <iframe id="solverFrame" class="solver-frame" title="Motore DLE Solver" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
 
@@ -557,6 +878,19 @@
     const status = document.querySelector("#status");
     const answer = document.querySelector("#answer");
     const meta = document.querySelector("#meta");
+    const answerGate = document.querySelector("#answerGate");
+    const countdownBadge = document.querySelector("#countdownBadge");
+    const adFallback = document.querySelector("#adFallback");
+    const adsenseSlot = document.querySelector("#adsenseSlot");
+    const premiumButton = document.querySelector("#premiumButton");
+    const premiumButtonText = document.querySelector("#premiumButtonText");
+    const gatePremiumButton = document.querySelector("#gatePremiumButton");
+    const premiumDialog = document.querySelector("#premiumDialog");
+    const closePremiumDialog = document.querySelector("#closePremiumDialog");
+    const premiumState = document.querySelector("#premiumState");
+    const paypalButtons = document.querySelector("#paypalButtons");
+    const subscriptionIdInput = document.querySelector("#subscriptionIdInput");
+    const restorePremiumButton = document.querySelector("#restorePremiumButton");
     const frame = document.querySelector("#solverFrame");
     const hero = document.querySelector("#hero");
     const siteLogo = document.querySelector("#siteLogo");
@@ -787,6 +1121,21 @@
     let frameScanId = null;
     let frameScans = 0;
     let completed = false;
+    let monetizationConfig = {
+      waitSeconds: 15,
+      paypal: { enabled: false, clientId: "", planId: "", environment: "sandbox" },
+      ads: { adsenseClient: "", adsenseSlot: "" },
+      serverGateEnabled: false
+    };
+    let premiumActive = false;
+    let premiumSubscriptionId = "";
+    let premiumToken = "";
+    let paypalButtonsRendered = false;
+    let answerGateTimerId = null;
+    let pendingReveal = null;
+    let pendingServerReveal = null;
+    let revealRequestInFlight = false;
+    let adInitialized = false;
 
     document.querySelectorAll("[data-url]").forEach(link => {
       link.addEventListener("click", event => {
@@ -825,6 +1174,321 @@
       button.textContent = "Trova risposta";
     }
 
+    function setPremiumState(message, kind = "") {
+      premiumState.textContent = message;
+      premiumState.className = `premium-state${kind ? ` ${kind}` : ""}`;
+    }
+
+    function updatePremiumUi() {
+      premiumButton.classList.toggle("active", premiumActive);
+      premiumButtonText.textContent = premiumActive ? "Premium attivo" : "Premium";
+      paypalButtons.hidden = premiumActive;
+
+      if (premiumActive) {
+        setPremiumState("Abbonamento attivo: timer e pubblicità vengono saltati.", "success");
+      } else if (monetizationConfig.paypal?.enabled) {
+        setPremiumState("Abbonati in modo sicuro tramite PayPal.");
+      } else {
+        setPremiumState("Premium non ancora configurato: aggiungi le variabili PayPal sul server.");
+      }
+    }
+
+    function stopAnswerGate() {
+      clearInterval(answerGateTimerId);
+      answerGateTimerId = null;
+      answerGate.hidden = true;
+    }
+
+    function renderAnswer(values, details = {}) {
+      pendingReveal = null;
+      pendingServerReveal = null;
+      stopAnswerGate();
+
+      result.className = "result show success";
+      status.textContent = details.mode || "Risposta trovata";
+      answer.textContent = values.join(" · ");
+      meta.textContent = `${new URL(activeUrl).hostname}${new URL(activeUrl).pathname}`;
+      finish();
+    }
+
+    function revealPendingAnswer() {
+      if (!pendingReveal) return;
+      const { values, details } = pendingReveal;
+      renderAnswer(values, details);
+    }
+
+    function prepareGate(remaining) {
+      result.className = "result show waiting";
+      status.textContent = "Risposta trovata";
+      answer.textContent = "";
+      meta.textContent = "Il conto alla rovescia si mette in pausa quando la scheda non è visibile.";
+      answerGate.hidden = false;
+      countdownBadge.textContent = String(Math.max(0, remaining));
+      button.disabled = true;
+      button.textContent = remaining > 0 ? `Attendi ${remaining}s` : "Mostro la risposta…";
+      initializeAdSlot();
+    }
+
+    function runGateCountdown(initialSeconds, onComplete) {
+      let remaining = Math.max(0, Math.ceil(Number(initialSeconds) || 0));
+      prepareGate(remaining);
+      clearInterval(answerGateTimerId);
+
+      if (remaining <= 0) {
+        onComplete();
+        return;
+      }
+
+      answerGateTimerId = setInterval(() => {
+        if (document.visibilityState !== "visible") return;
+        remaining -= 1;
+        countdownBadge.textContent = String(Math.max(0, remaining));
+        button.textContent = remaining > 0 ? `Attendi ${remaining}s` : "Mostro la risposta…";
+        if (remaining <= 0) {
+          clearInterval(answerGateTimerId);
+          answerGateTimerId = null;
+          onComplete();
+        }
+      }, 1000);
+    }
+
+    function startAnswerGate(values, details) {
+      pendingServerReveal = null;
+      pendingReveal = { values, details };
+      const waitSeconds = Math.max(0, Number(monetizationConfig.waitSeconds) || 0);
+      if (premiumActive || waitSeconds === 0) {
+        revealPendingAnswer();
+        return;
+      }
+
+      runGateCountdown(waitSeconds, revealPendingAnswer);
+    }
+
+    function startServerAnswerGate(data, details) {
+      completed = true;
+      stopTimers();
+      pendingReveal = null;
+      pendingServerReveal = {
+        revealToken: data.revealToken,
+        details
+      };
+
+      const waitSeconds = Math.max(0, Number(data.waitSeconds) || Number(monetizationConfig.waitSeconds) || 0);
+      runGateCountdown(waitSeconds, () => requestServerReveal(false));
+      setTimeout(resetFrame, 1200);
+    }
+
+    async function requestServerReveal(usePremium = false) {
+      if (!pendingServerReveal || revealRequestInFlight) return;
+      revealRequestInFlight = true;
+      button.disabled = true;
+      button.textContent = "Sblocco risposta…";
+
+      try {
+        const headers = { "content-type": "application/json", accept: "application/json" };
+        if ((usePremium || premiumActive) && premiumToken) {
+          headers.authorization = `Bearer ${premiumToken}`;
+        }
+
+        const response = await fetch("/api/reveal", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ revealToken: pendingServerReveal.revealToken })
+        });
+        const data = await response.json().catch(() => null);
+        if (!response.ok || !data?.success) throw new Error(data?.error || "Sblocco non riuscito.");
+
+        if (!data.ready) {
+          runGateCountdown(data.remainingSeconds || 1, () => requestServerReveal(false));
+          return;
+        }
+
+        const normalized = normalizeAnswer(data.answer);
+        if (!normalized) throw new Error("La risposta sbloccata non è valida.");
+        renderAnswer([normalized], pendingServerReveal.details);
+      } catch (error) {
+        stopAnswerGate();
+        pendingServerReveal = null;
+        result.className = "result show error";
+        status.textContent = "Impossibile sbloccare la risposta";
+        answer.textContent = "";
+        meta.textContent = error?.message || "Riprova tra qualche secondo.";
+        finish();
+      } finally {
+        revealRequestInFlight = false;
+      }
+    }
+
+    function loadExternalScript(id, src) {
+      const existing = document.getElementById(id);
+      if (existing) {
+        if (existing.dataset.loaded === "true") return Promise.resolve();
+        return new Promise((resolve, reject) => {
+          existing.addEventListener("load", resolve, { once: true });
+          existing.addEventListener("error", reject, { once: true });
+        });
+      }
+
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.id = id;
+        script.src = src;
+        script.async = true;
+        script.addEventListener("load", () => {
+          script.dataset.loaded = "true";
+          resolve();
+        }, { once: true });
+        script.addEventListener("error", reject, { once: true });
+        document.head.appendChild(script);
+      });
+    }
+
+    async function initializeAdSlot() {
+      if (adInitialized) return;
+      const client = monetizationConfig.ads?.adsenseClient;
+      const slot = monetizationConfig.ads?.adsenseSlot;
+      if (!client || !slot) return;
+
+      adInitialized = true;
+      adFallback.hidden = true;
+      adsenseSlot.hidden = false;
+      adsenseSlot.dataset.adClient = client;
+      adsenseSlot.dataset.adSlot = slot;
+      adsenseSlot.dataset.adFormat = "auto";
+      adsenseSlot.dataset.fullWidthResponsive = "true";
+
+      try {
+        await loadExternalScript(
+          "adsenseSdk",
+          `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(client)}`
+        );
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (_) {
+        adInitialized = false;
+        adsenseSlot.hidden = true;
+        adFallback.hidden = false;
+        adFallback.textContent = "Pubblicità temporaneamente non disponibile.";
+      }
+    }
+
+    async function verifyPremiumSubscription(subscriptionId, persist = true) {
+      const id = String(subscriptionId || "").trim();
+      if (!id || !monetizationConfig.paypal?.enabled) return false;
+
+      setPremiumState("Verifica dell’abbonamento PayPal…");
+      try {
+        const response = await fetch("/api/paypal-verify", {
+          method: "POST",
+          headers: { "content-type": "application/json", accept: "application/json" },
+          body: JSON.stringify({ subscriptionId: id })
+        });
+        const data = await response.json().catch(() => null);
+        if (!response.ok || !data?.success) throw new Error(data?.error || "Verifica non riuscita.");
+
+        premiumActive = data.active === true;
+        premiumSubscriptionId = premiumActive ? id : "";
+        premiumToken = premiumActive ? String(data.premiumToken || "") : "";
+        if (premiumActive && persist) {
+          localStorage.setItem("dlePremiumSubscriptionId", id);
+          if (premiumToken) localStorage.setItem("dlePremiumToken", premiumToken);
+        }
+        if (!premiumActive && data.status && data.status !== "ACTIVE") {
+          localStorage.removeItem("dlePremiumSubscriptionId");
+          localStorage.removeItem("dlePremiumToken");
+        }
+        updatePremiumUi();
+
+        if (premiumActive && pendingReveal) revealPendingAnswer();
+        if (premiumActive && pendingServerReveal) requestServerReveal(true);
+        return premiumActive;
+      } catch (error) {
+        premiumActive = false;
+        updatePremiumUi();
+        setPremiumState(error?.message || "Impossibile verificare PayPal.", "error");
+        return false;
+      }
+    }
+
+    async function ensurePayPalButtons() {
+      if (paypalButtonsRendered || !monetizationConfig.paypal?.enabled || premiumActive) return;
+      paypalButtonsRendered = true;
+      paypalButtons.textContent = "Caricamento PayPal…";
+
+      try {
+        const clientId = monetizationConfig.paypal.clientId;
+        await loadExternalScript(
+          "paypalSdk",
+          `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&vault=true&intent=subscription&components=buttons`
+        );
+        paypalButtons.textContent = "";
+
+        await window.paypal.Buttons({
+          style: { shape: "pill", color: "gold", layout: "vertical", label: "subscribe" },
+          createSubscription(_data, actions) {
+            return actions.subscription.create({
+              plan_id: monetizationConfig.paypal.planId
+            });
+          },
+          async onApprove(data) {
+            const active = await verifyPremiumSubscription(data.subscriptionID, true);
+            if (active) setTimeout(() => premiumDialog.close(), 650);
+          },
+          onCancel() {
+            setPremiumState("Pagamento annullato. Nessun abbonamento è stato attivato.");
+          },
+          onError(error) {
+            setPremiumState(error?.message || "PayPal non è disponibile in questo momento.", "error");
+          }
+        }).render("#paypalButtons");
+      } catch (error) {
+        paypalButtonsRendered = false;
+        paypalButtons.textContent = "";
+        setPremiumState(error?.message || "Impossibile caricare PayPal.", "error");
+      }
+    }
+
+    async function openPremium() {
+      if (!premiumDialog.open) premiumDialog.showModal();
+      updatePremiumUi();
+      await ensurePayPalButtons();
+    }
+
+    async function loadMonetization() {
+      try {
+        const response = await fetch("/api/config", { headers: { accept: "application/json" }, cache: "no-store" });
+        const data = await response.json().catch(() => null);
+        if (response.ok && data?.success) monetizationConfig = data;
+      } catch (_) {}
+
+      updatePremiumUi();
+      premiumToken = localStorage.getItem("dlePremiumToken") || "";
+      const savedSubscriptionId = localStorage.getItem("dlePremiumSubscriptionId") || "";
+      if (savedSubscriptionId) await verifyPremiumSubscription(savedSubscriptionId, true);
+    }
+
+    premiumButton.addEventListener("click", openPremium);
+    gatePremiumButton.addEventListener("click", openPremium);
+    restorePremiumButton.addEventListener("click", async () => {
+      const id = subscriptionIdInput.value.trim();
+      if (!id) {
+        setPremiumState("Inserisci l’ID dell’abbonamento PayPal.", "error");
+        subscriptionIdInput.focus();
+        return;
+      }
+      const active = await verifyPremiumSubscription(id, true);
+      if (active) subscriptionIdInput.value = "";
+    });
+    subscriptionIdInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        restorePremiumButton.click();
+      }
+    });
+    closePremiumDialog.addEventListener("click", () => premiumDialog.close());
+    premiumDialog.addEventListener("click", event => {
+      if (event.target === premiumDialog) premiumDialog.close();
+    });
+
     function normalizeAnswer(value) {
       if (value === null || value === undefined) return null;
 
@@ -851,14 +1515,11 @@
       if (!unique.length || completed) return false;
 
       completed = true;
-      result.className = "result show success";
-      status.textContent = details.mode || "Risposta trovata";
-      answer.textContent = unique.join(" · ");
-      meta.textContent =
-        `${new URL(activeUrl).hostname}${new URL(activeUrl).pathname}`;
-      finish();
+      stopTimers();
+      startAnswerGate(unique, details);
 
-      // Lascia il risultato visibile ma libera la pagina remota poco dopo.
+      // La risposta resta in memoria fino alla fine del timer, mentre la pagina
+      // remota viene liberata per evitare consumo inutile di risorse.
       setTimeout(resetFrame, 1200);
       return true;
     }
@@ -1144,8 +1805,11 @@
       });
 
       try {
+        const requestHeaders = { accept: "application/json" };
+        if (premiumToken) requestHeaders.authorization = `Bearer ${premiumToken}`;
+
         const response = await fetch(`/api/solve?${params.toString()}`, {
-          headers: { "accept": "application/json" },
+          headers: requestHeaders,
           cache: "no-store"
         });
 
@@ -1154,7 +1818,19 @@
 
         if (data?.fallback) return { handled: false };
 
+        if (response.ok && data?.success && data?.pending && data?.revealToken) {
+          startServerAnswerGate(data, {
+            mode: `${data.site || "DLE"} · ${data.modeLabel || "Risposta"}`,
+            method: data.source || "adattatore diretto protetto"
+          });
+          return { handled: true, success: true };
+        }
+
         if (response.ok && data?.success && data?.answer) {
+          if (data.premium === true) {
+            premiumActive = true;
+            updatePremiumUi();
+          }
           showAnswer([data.answer], {
             mode: `${data.site || "DLE"} · ${data.modeLabel || "Risposta"}`,
             method: data.source || "adattatore diretto"
@@ -1202,6 +1878,10 @@
       }
 
       stopTimers();
+      stopAnswerGate();
+      pendingReveal = null;
+      pendingServerReveal = null;
+      revealRequestInFlight = false;
       completed = false;
       frameScans = 0;
       resetFrame();
@@ -1229,6 +1909,8 @@
         finish();
       }, 52000);
     });
+
+    loadMonetization();
   </script>
 
 </body>
