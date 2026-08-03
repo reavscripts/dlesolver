@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.2.0
+
+- Added a compact search field that docks into the floating top bar after the main solver panel leaves the viewport.
+- Kept the docked field synchronized with the original form and routed submissions through the existing solver logic.
+- Added a subtle entrance transition, loading feedback, keyboard support and an automatic return to the answer panel.
+- Localized the docked controls in English, Italian, French and Spanish, with a non-intrusive mobile cutoff and reduced-motion support.
+
 ## 5.1.0
 
 - Redesigned the interface as a focused daily-game hub without changing solver, Premium, timer or theme-selection logic.

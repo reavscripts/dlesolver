@@ -1,8 +1,8 @@
-# DLE Solver v5.1
+# DLE Solver v5.2
 
 Solver leggero compatibile con Vercel e Render. Supporta 53 modalità giornaliere su 16 siti DLE tramite endpoint o adattatori che replicano la rotazione ufficiale; non usa Puppeteer, Playwright o browser headless.
 
-La versione 5.1 include:
+La versione 5.2 include:
 
 - conto alla rovescia prima della visualizzazione della risposta;
 - spazio pubblicitario durante l’attesa;
@@ -15,6 +15,7 @@ La versione 5.1 include:
 - SEO multilingua con canonical, `hreflang`, sitemap, Open Graph e dati strutturati.
 - interfaccia “daily game hub” con comando principale compatto, catalogo a schede, identità visive per franchise e layout responsive;
 - foglio di stile condiviso tra le quattro lingue, senza modifiche alla logica del solver.
+- campo di ricerca compatto integrato nella barra superiore quando il pannello principale esce dallo schermo, sincronizzato con il form originale.
 
 ## Siti e modalità supportati
 

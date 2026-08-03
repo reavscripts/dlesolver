@@ -101,6 +101,7 @@ for (const [url, endpoint, answer, field] of cases) {
 
 const indexHtml = await readFile(new URL("../public/index.html", import.meta.url), "utf8");
 const uiCss = await readFile(new URL("../public/ui-v6.css", import.meta.url), "utf8");
+const uiJs = await readFile(new URL("../public/ui-v6.js", import.meta.url), "utf8");
 for (const url of urls) {
   assert.ok(indexHtml.includes(`data-url="${url}"`), `Link esempio mancante: ${url}`);
 }
@@ -138,15 +139,22 @@ assert.ok(indexHtml.includes('hreflang="es" href="https://dlesolver.reav.website
 assert.ok(indexHtml.includes('navigator.languages'));
 assert.ok(indexHtml.includes('dleLanguagePreference'));
 assert.ok(indexHtml.includes('<link rel="stylesheet" href="/ui-v6.css">'));
+assert.ok(indexHtml.includes('<script src="/ui-v6.js" defer></script>'));
+assert.ok(indexHtml.includes('id="dockedSolverForm"'));
 assert.ok(indexHtml.includes('class="hero-eyebrow"'));
 assert.ok(indexHtml.includes('class="solver-card-head"'));
 assert.ok(indexHtml.includes('class="catalog-count"'));
-assert.ok(indexHtml.includes('DLE Solver · v5.1.0'));
+assert.ok(indexHtml.includes('DLE Solver · v5.2.0'));
 assert.ok(uiCss.includes("grid-template-columns: repeat(3, minmax(0, 1fr))"));
 assert.ok(uiCss.includes('.site-card:nth-child(16)'));
 assert.ok(uiCss.includes('@media (max-width: 560px)'));
 assert.ok(uiCss.includes('@media (prefers-reduced-motion: reduce)'));
 assert.ok(uiCss.includes('background-size: cover'));
+assert.ok(uiCss.includes('body.solver-docked .topbar-solver'));
+assert.ok(uiCss.includes('.topbar-solver-status'));
+assert.ok(uiJs.includes('primaryForm.requestSubmit()'));
+assert.ok(uiJs.includes('solverCard.scrollIntoView'));
+assert.ok(uiJs.includes('window.matchMedia("(min-width: 561px)"'));
 
 const localizedPages = [
   ["it", "../public/it/index.html", "https://dlesolver.reav.website/it/"],
@@ -179,10 +187,12 @@ for (const [language, file, canonical] of localizedPages) {
   assert.ok(html.includes('/backgrounds/animedle-dragonball.jpg'));
   assert.ok(html.includes('/logos/pokentions.png'));
   assert.ok(html.includes('<link rel="stylesheet" href="/ui-v6.css">'));
+  assert.ok(html.includes('<script src="/ui-v6.js" defer></script>'));
+  assert.ok(html.includes('id="dockedSolverForm"'));
   assert.ok(html.includes('class="hero-eyebrow"'));
   assert.ok(html.includes('class="solver-card-head"'));
   assert.ok(html.includes('class="catalog-count"'));
-  assert.ok(html.includes('DLE Solver · v5.1.0'));
+  assert.ok(html.includes('DLE Solver · v5.2.0'));
   htmlPages.push([language, html]);
 }
 

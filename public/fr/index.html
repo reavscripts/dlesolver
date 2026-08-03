@@ -841,6 +841,7 @@
     }
   </style>
   <link rel="stylesheet" href="/ui-v6.css">
+  <script src="/ui-v6.js" defer></script>
 
 <body data-language="fr">
   <div id="backgroundLayerA" class="background-layer" aria-hidden="true"></div>
@@ -857,8 +858,13 @@
             <path d="M17.5 3.5 21 3l-.5 3.5"/>
           </svg>
         </span>
-        DLE Solver
+        <span class="brand-label">DLE Solver</span>
       </div>
+      <form id="dockedSolverForm" class="topbar-solver" aria-label="Recherche rapide de la réponse" aria-hidden="true">
+        <span class="topbar-solver-status" aria-hidden="true"></span>
+        <input id="dockedUrlInput" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="Collez le lien du jeu" aria-label="Lien du jeu" required tabindex="-1">
+        <button id="dockedSubmitButton" type="submit" data-idle-label="Trouver" tabindex="-1">Trouver</button>
+      </form>
       <div class="topbar-actions">
         <nav class="language-switcher" aria-label="Sélection de la langue">
           <a class="language-link" href="/" lang="en" hreflang="en" data-language-code="en" aria-label="English">EN</a>
@@ -1053,7 +1059,7 @@
       </div>
     </section>
 
-    <footer>DLE Solver · v5.1.0</footer>
+    <footer>DLE Solver · v5.2.0</footer>
   </main>
 
   <dialog id="premiumDialog" class="premium-dialog" aria-labelledby="premiumTitle">

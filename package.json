@@ -1,6 +1,6 @@
 {
   "name": "dle-solver",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "private": true,
   "type": "module",
   "description": "Direct daily solver for 16 DLE websites and 53 modes with multilingual UI, PayPal Premium and server-side answer gating.",
@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "node --watch server.js",
     "start": "node server.js",
-    "check": "node --check server.js && node --check api/solve.js && node --check api/view.js && node --check api/proxy.js && node --check api/health.js && node --check lib/direct-solver.js && node --check lib/runtime-proxy.js && node --check lib/paypal-subscriptions.js && node --check lib/monetization-tokens.js && node --check api/config.js && node --check api/paypal-verify.js && node --check api/reveal.js && node scripts/self-check.mjs"
+    "check": "node --check server.js && node --check api/solve.js && node --check api/view.js && node --check api/proxy.js && node --check api/health.js && node --check lib/direct-solver.js && node --check lib/runtime-proxy.js && node --check lib/paypal-subscriptions.js && node --check lib/monetization-tokens.js && node --check api/config.js && node --check api/paypal-verify.js && node --check api/reveal.js && node --check public/ui-v6.js && node scripts/self-check.mjs"
   },
   "dependencies": {
     "seedrandom": "^3.0.5"
