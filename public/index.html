@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Find today's OnePieceDle, Narutodle, LoLdle, Pokédle, Dotadle, Smashdle, Bleachdle and Jujutsudle answers without wasting guesses.">
+  <meta name="description" content="Find today’s answer for 53 daily modes across 16 DLE games, including anime, Pokémon, LoL, Dota and Smash.">
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-  <meta name="theme-color" content="#08090c">
+  <meta name="theme-color" content="#060812">
   <meta name="google-adsense-account" content="ca-pub-1414083636493759">
   <link rel="canonical" href="https://dlesolver.reav.website/">
   <link rel="alternate" hreflang="en" href="https://dlesolver.reav.website/">
@@ -20,14 +20,14 @@
   <meta property="og:locale:alternate" content="fr_FR">
   <meta property="og:locale:alternate" content="es_ES">
 <meta property="og:title" content="DLE Solver – Daily answers for DLE games">
-  <meta property="og:description" content="Solve OnePieceDle, Narutodle, LoLdle, Pokédle, Dotadle, Smashdle, Bleachdle and Jujutsudle without wasting guesses.">
+  <meta property="og:description" content="One daily-game hub for 53 modes across 16 supported DLE games.">
   <meta property="og:url" content="https://dlesolver.reav.website/">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="DLE Solver – Daily answers for DLE games">
   <meta name="twitter:description" content="Quickly find today's answer for the most popular DLE games.">
   <title>DLE Solver – Daily OnePieceDle, Narutodle, LoLdle and more answers</title>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"WebApplication","name":"DLE Solver","url":"https://dlesolver.reav.website/","applicationCategory":"GameApplication","operatingSystem":"Any web browser","inLanguage":"en","description":"Online tool for finding today's OnePieceDle, Narutodle, LoLdle, Pokédle, Dotadle, Smashdle, Bleachdle and Jujutsudle answers.","isAccessibleForFree":true}
+  {"@context":"https://schema.org","@type":"WebApplication","name":"DLE Solver","url":"https://dlesolver.reav.website/","applicationCategory":"GameApplication","operatingSystem":"Any web browser","inLanguage":"en","description":"Daily-game hub for finding today’s answer across 53 modes and 16 supported DLE games.","isAccessibleForFree":true}
   </script>
   <script>
     (() => {
@@ -861,6 +861,7 @@
       .premium-trigger { flex: 0 0 auto; }
     }
   </style>
+  <link rel="stylesheet" href="/ui-v6.css">
 
 <body data-language="en">
   <div id="backgroundLayerA" class="background-layer" aria-hidden="true"></div>
@@ -894,8 +895,9 @@
 
     <header id="hero" class="hero">
       <div id="heroIntro" class="hero-intro">
-        <h1>Today’s answer, without wasting guesses.</h1>
-        <p>Paste the full link to the DLE game mode you want to solve.</p>
+        <div class="hero-eyebrow"><span class="live-dot" aria-hidden="true"></span>Live daily rotations · 53 modes</div>
+        <h1>Today’s DLE answer, in one link.</h1>
+        <p>Paste any supported game URL. The solver detects the site and daily mode automatically.</p>
       </div>
       <div id="siteLogoShell" class="site-logo-shell" aria-live="polite">
         <img id="siteLogo" class="site-logo" alt="">
@@ -903,6 +905,10 @@
     </header>
 
     <section class="solver-card" aria-label="Find the answer">
+      <div class="solver-card-head">
+        <div class="solver-instruction"><span class="step-badge">01</span><span>Paste the game link</span></div>
+        <span class="auto-detect">Automatic detection</span>
+      </div>
       <form id="solverForm">
         <input id="urlInput" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="https://narutodle.net/classic" required>
         <button id="submitButton" type="submit">Find answer</button>
@@ -932,8 +938,8 @@
 
     <section class="tutorial">
       <div class="section-head">
-        <h2>Which link should I paste?</h2>
-        <p>Click an example to copy it into the field.</p>
+        <div class="section-heading-group"><span class="section-kicker">Game library</span><h2>Choose your daily game</h2></div>
+        <p>Pick a mode to load its exact URL.<span class="catalog-count">16 games · 53 modes</span></p>
       </div>
 
       <div class="site-grid">
@@ -1113,7 +1119,7 @@
       </div>
     </section>
 
-    <footer>DLE Solver · v5.0.0</footer>
+    <footer>DLE Solver · v5.1.0</footer>
   </main>
 
   <dialog id="premiumDialog" class="premium-dialog" aria-labelledby="premiumTitle">

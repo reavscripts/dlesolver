@@ -100,6 +100,7 @@ for (const [url, endpoint, answer, field] of cases) {
 }
 
 const indexHtml = await readFile(new URL("../public/index.html", import.meta.url), "utf8");
+const uiCss = await readFile(new URL("../public/ui-v6.css", import.meta.url), "utf8");
 for (const url of urls) {
   assert.ok(indexHtml.includes(`data-url="${url}"`), `Link esempio mancante: ${url}`);
 }
@@ -136,6 +137,16 @@ assert.ok(indexHtml.includes('hreflang="fr" href="https://dlesolver.reav.website
 assert.ok(indexHtml.includes('hreflang="es" href="https://dlesolver.reav.website/es/"'));
 assert.ok(indexHtml.includes('navigator.languages'));
 assert.ok(indexHtml.includes('dleLanguagePreference'));
+assert.ok(indexHtml.includes('<link rel="stylesheet" href="/ui-v6.css">'));
+assert.ok(indexHtml.includes('class="hero-eyebrow"'));
+assert.ok(indexHtml.includes('class="solver-card-head"'));
+assert.ok(indexHtml.includes('class="catalog-count"'));
+assert.ok(indexHtml.includes('DLE Solver · v5.1.0'));
+assert.ok(uiCss.includes("grid-template-columns: repeat(3, minmax(0, 1fr))"));
+assert.ok(uiCss.includes('.site-card:nth-child(16)'));
+assert.ok(uiCss.includes('@media (max-width: 560px)'));
+assert.ok(uiCss.includes('@media (prefers-reduced-motion: reduce)'));
+assert.ok(uiCss.includes('background-size: cover'));
 
 const localizedPages = [
   ["it", "../public/it/index.html", "https://dlesolver.reav.website/it/"],
@@ -167,10 +178,21 @@ for (const [language, file, canonical] of localizedPages) {
   assert.ok(html.includes('/backgrounds/animedle-onepiece.webp'));
   assert.ok(html.includes('/backgrounds/animedle-dragonball.jpg'));
   assert.ok(html.includes('/logos/pokentions.png'));
+  assert.ok(html.includes('<link rel="stylesheet" href="/ui-v6.css">'));
+  assert.ok(html.includes('class="hero-eyebrow"'));
+  assert.ok(html.includes('class="solver-card-head"'));
+  assert.ok(html.includes('class="catalog-count"'));
+  assert.ok(html.includes('DLE Solver · v5.1.0'));
   htmlPages.push([language, html]);
 }
 
 for (const [language, html] of htmlPages) {
+  const structuredData = html.match(
+    /<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/
+  );
+  assert.ok(structuredData, `Dati strutturati mancanti per ${language}`);
+  JSON.parse(structuredData[1]);
+
   const scripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/g)];
   assert.ok(scripts.length >= 1, `Script inline mancante per ${language}`);
   for (const [index, match] of scripts.entries()) {

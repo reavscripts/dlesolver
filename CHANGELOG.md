@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.1.0
+
+- Redesigned the interface as a focused daily-game hub without changing solver, Premium, timer or theme-selection logic.
+- Added a compact command deck, live coverage indicators and clearer task-oriented copy in all four languages.
+- Reworked the 16-game catalog into a denser responsive grid with franchise art, individual accent colors and improved mode controls.
+- Added stronger focus states, reduced-motion support, responsive breakpoints and a shared `ui-v6.css` presentation layer.
+- Refined selected-game backgrounds, content contrast, result styling and mobile stacking.
+
 ## 5.0.0
 
 - Expanded the solver from 31 to 53 verified daily modes and from 8 to 16 site configurations.

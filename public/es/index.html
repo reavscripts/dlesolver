@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Encuentra la respuesta diaria de OnePieceDle, Narutodle, LoLdle, Pokédle, Dotadle, Smashdle, Bleachdle y Jujutsudle sin desperdiciar intentos.">
+  <meta name="description" content="Encuentra la respuesta de hoy para 53 modos diarios en 16 juegos DLE de anime, Pokémon, LoL, Dota y Smash.">
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-  <meta name="theme-color" content="#08090c">
+  <meta name="theme-color" content="#060812">
   <meta name="google-adsense-account" content="ca-pub-1414083636493759">
   <link rel="canonical" href="https://dlesolver.reav.website/es/">
   <link rel="alternate" hreflang="en" href="https://dlesolver.reav.website/">
@@ -20,14 +20,14 @@
   <meta property="og:locale:alternate" content="it_IT">
   <meta property="og:locale:alternate" content="fr_FR">
 <meta property="og:title" content="DLE Solver – Respuestas diarias para juegos DLE">
-  <meta property="og:description" content="Resuelve OnePieceDle, Narutodle, LoLdle, Pokédle, Dotadle, Smashdle, Bleachdle y Jujutsudle sin desperdiciar intentos.">
+  <meta property="og:description" content="Un solo hub diario para 53 modos en 16 juegos DLE compatibles.">
   <meta property="og:url" content="https://dlesolver.reav.website/es/">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="DLE Solver – Respuestas diarias para juegos DLE">
   <meta name="twitter:description" content="Encuentra rápidamente la respuesta de hoy para los juegos DLE más populares.">
   <title>DLE Solver – Respuestas diarias de OnePieceDle, Narutodle, LoLdle y más</title>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"WebApplication","name":"DLE Solver","url":"https://dlesolver.reav.website/es/","applicationCategory":"GameApplication","operatingSystem":"Cualquier navegador web","inLanguage":"es","description":"Herramienta en línea para encontrar la respuesta diaria de OnePieceDle, Narutodle, LoLdle, Pokédle, Dotadle, Smashdle, Bleachdle y Jujutsudle.","isAccessibleForFree":true}
+  {"@context":"https://schema.org","@type":"WebApplication","name":"DLE Solver","url":"https://dlesolver.reav.website/es/","applicationCategory":"GameApplication","operatingSystem":"Cualquier navegador web","inLanguage":"es","description":"Hub de juegos diarios para encontrar la respuesta de hoy en 53 modos y 16 juegos DLE compatibles.","isAccessibleForFree":true}
   </script>
   <style>
     :root {
@@ -840,6 +840,7 @@
       .premium-trigger { flex: 0 0 auto; }
     }
   </style>
+  <link rel="stylesheet" href="/ui-v6.css">
 
 <body data-language="es">
   <div id="backgroundLayerA" class="background-layer" aria-hidden="true"></div>
@@ -873,8 +874,9 @@
 
     <header id="hero" class="hero">
       <div id="heroIntro" class="hero-intro">
-        <h1>La respuesta de hoy, sin desperdiciar intentos.</h1>
-        <p>Pega el enlace completo del modo DLE que quieres resolver.</p>
+        <div class="hero-eyebrow"><span class="live-dot" aria-hidden="true"></span>Rotaciones diarias live · 53 modos</div>
+        <h1>La respuesta DLE de hoy, en un enlace.</h1>
+        <p>Pega la URL de un juego compatible: el solucionador detecta automáticamente el sitio y el modo diario.</p>
       </div>
       <div id="siteLogoShell" class="site-logo-shell" aria-live="polite">
         <img id="siteLogo" class="site-logo" alt="">
@@ -882,6 +884,10 @@
     </header>
 
     <section class="solver-card" aria-label="Buscar la respuesta">
+      <div class="solver-card-head">
+        <div class="solver-instruction"><span class="step-badge">01</span><span>Pega el enlace del juego</span></div>
+        <span class="auto-detect">Detección automática</span>
+      </div>
       <form id="solverForm">
         <input id="urlInput" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="https://narutodle.net/classic" required>
         <button id="submitButton" type="submit">Buscar respuesta</button>
@@ -911,8 +917,8 @@
 
     <section class="tutorial">
       <div class="section-head">
-        <h2>¿Qué enlace debo pegar?</h2>
-        <p>Haz clic en un ejemplo para copiarlo en el campo.</p>
+        <div class="section-heading-group"><span class="section-kicker">Catálogo de juegos</span><h2>Elige tu juego diario</h2></div>
+        <p>Selecciona un modo para cargar su URL exacta.<span class="catalog-count">16 juegos · 53 modos</span></p>
       </div>
 
       <div class="site-grid">
@@ -1047,7 +1053,7 @@
       </div>
     </section>
 
-    <footer>DLE Solver · v5.0.0</footer>
+    <footer>DLE Solver · v5.1.0</footer>
   </main>
 
   <dialog id="premiumDialog" class="premium-dialog" aria-labelledby="premiumTitle">
