@@ -25,6 +25,14 @@
     {
       "source": "/it/",
       "destination": "/it/index.html"
+    },
+    {
+      "source": "/fr/",
+      "destination": "/fr/index.html"
+    },
+    {
+      "source": "/es/",
+      "destination": "/es/index.html"
     }
   ],
   "redirects": [
@@ -41,6 +49,26 @@
     {
       "source": "/it/index.html",
       "destination": "/it/",
+      "permanent": true
+    },
+    {
+      "source": "/fr",
+      "destination": "/fr/",
+      "permanent": true
+    },
+    {
+      "source": "/fr/index.html",
+      "destination": "/fr/",
+      "permanent": true
+    },
+    {
+      "source": "/es",
+      "destination": "/es/",
+      "permanent": true
+    },
+    {
+      "source": "/es/index.html",
+      "destination": "/es/",
       "permanent": true
     }
   ]

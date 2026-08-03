@@ -10,12 +10,16 @@
   <link rel="canonical" href="https://dlesolver.reav.website/">
   <link rel="alternate" hreflang="en" href="https://dlesolver.reav.website/">
   <link rel="alternate" hreflang="it" href="https://dlesolver.reav.website/it/">
+  <link rel="alternate" hreflang="fr" href="https://dlesolver.reav.website/fr/">
+  <link rel="alternate" hreflang="es" href="https://dlesolver.reav.website/es/">
   <link rel="alternate" hreflang="x-default" href="https://dlesolver.reav.website/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="DLE Solver">
   <meta property="og:locale" content="en_US">
   <meta property="og:locale:alternate" content="it_IT">
-  <meta property="og:title" content="DLE Solver – Daily answers for DLE games">
+  <meta property="og:locale:alternate" content="fr_FR">
+  <meta property="og:locale:alternate" content="es_ES">
+<meta property="og:title" content="DLE Solver – Daily answers for DLE games">
   <meta property="og:description" content="Solve OnePieceDle, Narutodle, LoLdle, Pokédle, Dotadle and Smashdle without wasting guesses.">
   <meta property="og:url" content="https://dlesolver.reav.website/">
   <meta name="twitter:card" content="summary">
@@ -24,6 +28,27 @@
   <title>DLE Solver – Daily OnePieceDle, Narutodle, LoLdle and more answers</title>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"WebApplication","name":"DLE Solver","url":"https://dlesolver.reav.website/","applicationCategory":"GameApplication","operatingSystem":"Any web browser","inLanguage":"en","description":"Online tool for finding today's OnePieceDle, Narutodle, LoLdle, Pokédle, Dotadle and Smashdle answers.","isAccessibleForFree":true}
+  </script>
+  <script>
+    (() => {
+      const routes = Object.freeze({ en: "/", it: "/it/", fr: "/fr/", es: "/es/" });
+      const normalizeLanguage = value => String(value || "").trim().toLowerCase().split(/[-_]/)[0];
+
+      try {
+        const savedLanguage = normalizeLanguage(localStorage.getItem("dleLanguagePreference"));
+        const browserLanguages = Array.isArray(navigator.languages) && navigator.languages.length
+          ? navigator.languages
+          : [navigator.language];
+        const detectedLanguage = browserLanguages
+          .map(normalizeLanguage)
+          .find(language => routes[language]);
+        const preferredLanguage = routes[savedLanguage] ? savedLanguage : detectedLanguage;
+
+        if (preferredLanguage && preferredLanguage !== "en") {
+          location.replace(`${routes[preferredLanguage]}${location.search}${location.hash}`);
+        }
+      } catch (_) {}
+    })();
   </script>
   <style>
     :root {
@@ -809,6 +834,13 @@
       .site-logo-shell { min-height: 145px; }
       .site-logo { max-width: 92vw; max-height: 135px; }
     }
+
+    @media (max-width: 520px) {
+      .topbar { flex-direction: column; align-items: stretch; gap: 14px; }
+      .topbar-actions { width: 100%; justify-content: space-between; flex-wrap: nowrap; }
+      .language-link { min-width: 34px; padding-inline: 8px; }
+      .premium-trigger { flex: 0 0 auto; }
+    }
   </style>
 
 <body data-language="en">
@@ -830,8 +862,10 @@
       </div>
       <div class="topbar-actions">
         <nav class="language-switcher" aria-label="Language selection">
-          <a class="language-link active" href="/" lang="en" hreflang="en" aria-current="page" aria-label="English">EN</a>
-          <a class="language-link" href="/it/" lang="it" hreflang="it" aria-label="Italiano">IT</a>
+          <a class="language-link active" href="/" lang="en" hreflang="en" data-language-code="en" aria-current="page" aria-label="English">EN</a>
+          <a class="language-link" href="/it/" lang="it" hreflang="it" data-language-code="it" aria-label="Italiano">IT</a>
+          <a class="language-link" href="/fr/" lang="fr" hreflang="fr" data-language-code="fr" aria-label="Français">FR</a>
+          <a class="language-link" href="/es/" lang="es" hreflang="es" data-language-code="es" aria-label="Español">ES</a>
         </nav>
         <button id="premiumButton" class="premium-trigger" type="button" aria-haspopup="dialog">
           <span class="sparkle" aria-hidden="true">✦</span><span id="premiumButtonText">Premium</span>
@@ -1034,6 +1068,14 @@
       document.querySelector("#backgroundLayerA"),
       document.querySelector("#backgroundLayerB")
     ];
+
+    document.querySelectorAll(".language-link[data-language-code]").forEach(link => {
+      link.addEventListener("click", () => {
+        try {
+          localStorage.setItem("dleLanguagePreference", link.dataset.languageCode);
+        } catch (_) {}
+      });
+    });
 
     const SITE_THEMES = {
       "onepiecedle.net": {

@@ -61,11 +61,46 @@ assert.ok(indexHtml.includes("smashdle.net"));
 assert.ok(indexHtml.includes("<html lang=\"en\">"));
 assert.ok(indexHtml.includes('rel="canonical" href="https://dlesolver.reav.website/"'));
 assert.ok(indexHtml.includes('hreflang="it" href="https://dlesolver.reav.website/it/"'));
-const italianHtml = await readFile(new URL("../public/it/index.html", import.meta.url), "utf8");
-assert.ok(italianHtml.includes("<html lang=\"it\">"));
-assert.ok(italianHtml.includes('rel="canonical" href="https://dlesolver.reav.website/it/"'));
+assert.ok(indexHtml.includes('hreflang="fr" href="https://dlesolver.reav.website/fr/"'));
+assert.ok(indexHtml.includes('hreflang="es" href="https://dlesolver.reav.website/es/"'));
+assert.ok(indexHtml.includes('navigator.languages'));
+assert.ok(indexHtml.includes('dleLanguagePreference'));
+
+const localizedPages = [
+  ["it", "../public/it/index.html", "https://dlesolver.reav.website/it/"],
+  ["fr", "../public/fr/index.html", "https://dlesolver.reav.website/fr/"],
+  ["es", "../public/es/index.html", "https://dlesolver.reav.website/es/"]
+];
+
+const htmlPages = [["en", indexHtml]];
+for (const [language, file, canonical] of localizedPages) {
+  const html = await readFile(new URL(file, import.meta.url), "utf8");
+  assert.ok(html.includes(`<html lang="${language}">`));
+  assert.ok(html.includes(`rel="canonical" href="${canonical}"`));
+  assert.ok(html.includes('data-language-code="en"'));
+  assert.ok(html.includes('data-language-code="it"'));
+  assert.ok(html.includes('data-language-code="fr"'));
+  assert.ok(html.includes('data-language-code="es"'));
+  htmlPages.push([language, html]);
+}
+
+for (const [language, html] of htmlPages) {
+  const scripts = [...html.matchAll(/<script(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/g)];
+  assert.ok(scripts.length >= 1, `Script inline mancante per ${language}`);
+  for (const [index, match] of scripts.entries()) {
+    new vm.Script(match[1], { filename: `public-${language}-${index}.js` });
+  }
+}
+
 const sitemapXml = await readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8");
-assert.ok(sitemapXml.includes("https://dlesolver.reav.website/it/"));
+for (const url of [
+  "https://dlesolver.reav.website/",
+  "https://dlesolver.reav.website/it/",
+  "https://dlesolver.reav.website/fr/",
+  "https://dlesolver.reav.website/es/"
+]) {
+  assert.ok(sitemapXml.includes(url));
+}
 
 for (const url of urls) {
   const transformed = transformTargetHtml(

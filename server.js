@@ -61,8 +61,12 @@ async function readRawBody(req, limit = 2 * 1024 * 1024) {
 async function serveStatic(req, res) {
   const requestUrl = new URL(req.url, "http://localhost");
   let pathname = decodeURIComponent(requestUrl.pathname);
-  if (pathname === "/it" || pathname === "/it/index.html") {
-    res.writeHead(308, { location: "/it/", "cache-control": "public, max-age=3600" });
+  const localizedRoute = pathname.match(/^\/(it|fr|es)(?:\/index\.html)?$/);
+  if (localizedRoute) {
+    res.writeHead(308, {
+      location: `/${localizedRoute[1]}/`,
+      "cache-control": "public, max-age=3600"
+    });
     res.end();
     return;
   }
@@ -103,7 +107,7 @@ const server = http.createServer(async (req, res) => {
     const requestUrl = new URL(req.url, `http://${req.headers.host || "localhost"}`);
 
     if (req.method === "GET" && requestUrl.pathname === "/api/health") {
-      sendJson(res, 200, { ok: true, service: "dle-solver", version: "4.6.0", engine: "direct-network-v4.2+runtime-proxy-v4.0" });
+      sendJson(res, 200, { ok: true, service: "dle-solver", version: "4.7.0", engine: "direct-network-v4.2+runtime-proxy-v4.0" });
       return;
     }
 

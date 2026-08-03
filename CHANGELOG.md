@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.7.0
+
+- Added fully localized French (`/fr/`) and Spanish (`/es/`) versions.
+- Expanded the language selector to EN, IT, FR and ES.
+- Added automatic browser-language selection from the x-default home page.
+- Manual language choices are saved in `localStorage` and take priority.
+- Expanded canonical, hreflang, Open Graph, JSON-LD, sitemap and routing checks to all four languages.
+
 ## 4.6.0
 
 - English is now the default language at `/`.
