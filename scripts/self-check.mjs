@@ -138,8 +138,8 @@ assert.ok(indexHtml.includes('hreflang="fr" href="https://dlesolver.reav.website
 assert.ok(indexHtml.includes('hreflang="es" href="https://dlesolver.reav.website/es/"'));
 assert.ok(indexHtml.includes('navigator.languages'));
 assert.ok(indexHtml.includes('dleLanguagePreference'));
-assert.ok(indexHtml.includes('<link rel="stylesheet" href="/ui-v6.css">'));
-assert.ok(indexHtml.includes('<script src="/ui-v6.js" defer></script>'));
+assert.ok(indexHtml.includes('<link rel="stylesheet" href="/ui-v6.css?v=5.2.0">'));
+assert.ok(indexHtml.includes('<script src="/ui-v6.js?v=5.2.0" defer></script>'));
 assert.ok(indexHtml.includes('id="dockedSolverForm"'));
 assert.ok(indexHtml.includes('class="hero-eyebrow"'));
 assert.ok(indexHtml.includes('class="solver-card-head"'));
@@ -186,8 +186,8 @@ for (const [language, file, canonical] of localizedPages) {
   assert.ok(html.includes('/backgrounds/animedle-onepiece.webp'));
   assert.ok(html.includes('/backgrounds/animedle-dragonball.jpg'));
   assert.ok(html.includes('/logos/pokentions.png'));
-  assert.ok(html.includes('<link rel="stylesheet" href="/ui-v6.css">'));
-  assert.ok(html.includes('<script src="/ui-v6.js" defer></script>'));
+  assert.ok(html.includes('<link rel="stylesheet" href="/ui-v6.css?v=5.2.0">'));
+  assert.ok(html.includes('<script src="/ui-v6.js?v=5.2.0" defer></script>'));
   assert.ok(html.includes('id="dockedSolverForm"'));
   assert.ok(html.includes('class="hero-eyebrow"'));
   assert.ok(html.includes('class="solver-card-head"'));
