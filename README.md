@@ -1,14 +1,16 @@
-# DLE Solver v4.5
+# DLE Solver v4.6
 
 Solver leggero compatibile con Vercel e Render. Per i sei siti supportati usa direttamente gli endpoint giornalieri e la stessa decifratura CryptoJS della rete DLE; non usa Puppeteer, Playwright o browser headless.
 
-La versione 4.5 aggiunge:
+La versione 4.6 aggiunge:
 
 - conto alla rovescia prima della visualizzazione della risposta;
 - spazio pubblicitario durante l’attesa;
 - pausa automatica del timer quando la scheda non è visibile;
 - abbonamento PayPal Premium per saltare attesa e pubblicità;
-- verifica server-side dello stato `ACTIVE` e del piano PayPal configurato.
+- verifica server-side dello stato `ACTIVE` e del piano PayPal configurato;
+- inglese come lingua predefinita e italiano disponibile su `/it/`;
+- SEO multilingua con canonical, `hreflang`, sitemap, Open Graph e dati strutturati.
 
 ## Siti e modalità supportati
 
@@ -36,7 +38,7 @@ Aprire `http://localhost:3000`.
 Copiare `.env.example` nei parametri d’ambiente della piattaforma. In locale è possibile impostarli nel terminale o usare il sistema di environment preferito.
 
 ```env
-ANSWER_WAIT_SECONDS=15
+ANSWER_WAIT_SECONDS=60
 MONETIZATION_SECRET=una-chiave-casuale-di-almeno-24-caratteri
 PAYPAL_ENV=sandbox
 PAYPAL_CLIENT_ID=...

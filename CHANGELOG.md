@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.6.0
+
+- English is now the default language at `/`.
+- Italian remains available at `/it/` with a visible language selector.
+- Added localized runtime messages and PayPal SDK locale.
+- Added canonical URLs, hreflang, Open Graph, Twitter metadata and JSON-LD.
+- Added `robots.txt`, multilingual `sitemap.xml` and indexable explanatory content.
+
 ## 4.5.0
 
 - Aggiunto timer configurabile prima della visualizzazione della risposta.

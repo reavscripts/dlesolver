@@ -21,6 +21,27 @@
     {
       "source": "/",
       "destination": "/index.html"
+    },
+    {
+      "source": "/it/",
+      "destination": "/it/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/it",
+      "destination": "/it/",
+      "permanent": true
+    },
+    {
+      "source": "/it/index.html",
+      "destination": "/it/",
+      "permanent": true
     }
   ]
 }

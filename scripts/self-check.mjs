@@ -58,6 +58,14 @@ for (const url of urls) {
 assert.ok(indexHtml.includes("const DIRECT_HOSTS = new Set"));
 assert.ok(indexHtml.includes("narutodle.net"));
 assert.ok(indexHtml.includes("smashdle.net"));
+assert.ok(indexHtml.includes("<html lang=\"en\">"));
+assert.ok(indexHtml.includes('rel="canonical" href="https://dlesolver.reav.website/"'));
+assert.ok(indexHtml.includes('hreflang="it" href="https://dlesolver.reav.website/it/"'));
+const italianHtml = await readFile(new URL("../public/it/index.html", import.meta.url), "utf8");
+assert.ok(italianHtml.includes("<html lang=\"it\">"));
+assert.ok(italianHtml.includes('rel="canonical" href="https://dlesolver.reav.website/it/"'));
+const sitemapXml = await readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8");
+assert.ok(sitemapXml.includes("https://dlesolver.reav.website/it/"));
 
 for (const url of urls) {
   const transformed = transformTargetHtml(
