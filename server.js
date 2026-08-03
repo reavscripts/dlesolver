@@ -107,7 +107,7 @@ const server = http.createServer(async (req, res) => {
     const requestUrl = new URL(req.url, `http://${req.headers.host || "localhost"}`);
 
     if (req.method === "GET" && requestUrl.pathname === "/api/health") {
-      sendJson(res, 200, { ok: true, service: "dle-solver", version: "4.9.0", engine: "direct-network-v4.9+runtime-proxy-v4.0" });
+      sendJson(res, 200, { ok: true, service: "dle-solver", version: "4.10.0", engine: "direct-network-v4.10+runtime-proxy-v4.0" });
       return;
     }
 

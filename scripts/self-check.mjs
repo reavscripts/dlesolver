@@ -7,6 +7,7 @@ import {
   decryptCryptoJsOpenSsl,
   extractBleachdleCharacterNames,
   extractBleachdleWordlyRotation,
+  extractJujutsudleCharacterNames,
   getDirectSites,
   solveDirect
 } from "../lib/direct-solver.js";
@@ -47,7 +48,13 @@ const cases = [
 
 const bleachdleClassicUrl = "https://bleachdle.org/bleach.html";
 const bleachdleWordlyUrl = "https://bleachdle.org/bleach-wordly.htm";
-const urls = [...cases.map(item => item[0]), bleachdleClassicUrl, bleachdleWordlyUrl];
+const jujutsudleClassicUrl = "https://jujutsudle.com/";
+const urls = [
+  ...cases.map(item => item[0]),
+  bleachdleClassicUrl,
+  bleachdleWordlyUrl,
+  jujutsudleClassicUrl
+];
 const expectedByRequest = new Map();
 for (const [url, endpoint, answer, field] of cases) {
   const target = new URL(url);
@@ -67,6 +74,9 @@ assert.ok(indexHtml.includes('data-url="https://bleachdle.org/bleach.html"'));
 assert.ok(indexHtml.includes('data-url="https://bleachdle.org/bleach-wordly.htm"'));
 assert.ok(indexHtml.includes('/backgrounds/bleach.webp'));
 assert.ok(indexHtml.includes('/logos/bleachdle.png'));
+assert.ok(indexHtml.includes('data-url="https://jujutsudle.com/"'));
+assert.ok(indexHtml.includes('/backgrounds/jujutsudle.webp'));
+assert.ok(indexHtml.includes('/logos/jujutsudle.webp'));
 assert.ok(indexHtml.includes("<html lang=\"en\">"));
 assert.ok(indexHtml.includes('rel="canonical" href="https://dlesolver.reav.website/"'));
 assert.ok(indexHtml.includes('hreflang="it" href="https://dlesolver.reav.website/it/"'));
@@ -94,6 +104,9 @@ for (const [language, file, canonical] of localizedPages) {
   assert.ok(html.includes('data-url="https://bleachdle.org/bleach-wordly.htm"'));
   assert.ok(html.includes('/backgrounds/bleach.webp'));
   assert.ok(html.includes('/logos/bleachdle.png'));
+  assert.ok(html.includes('data-url="https://jujutsudle.com/"'));
+  assert.ok(html.includes('/backgrounds/jujutsudle.webp'));
+  assert.ok(html.includes('/logos/jujutsudle.webp'));
   htmlPages.push([language, html]);
 }
 
@@ -174,6 +187,18 @@ const parsedSyntheticBleachdleNames = extractBleachdleCharacterNames(
 assert.equal(parsedSyntheticBleachdleNames.length, 80);
 assert.equal(parsedSyntheticBleachdleNames[27], "Suì-Fēng");
 
+const syntheticJujutsudleNames = Array.from(
+  { length: 97 },
+  (_, index) => index === 21 ? "Hana Kurusu" : `Jujutsu Character ${index}`
+);
+const syntheticJujutsudleBundle =
+  `let c=[${syntheticJujutsudleNames.map(name => `{name:"${name}",hints:[]}`).join(",")}];` +
+  `function f(){return c[x()]}function x(){return dayOfYear(new Date())%c.length}`;
+const parsedSyntheticJujutsudleNames = extractJujutsudleCharacterNames(
+  syntheticJujutsudleBundle
+);
+assert.deepEqual(parsedSyntheticJujutsudleNames, syntheticJujutsudleNames);
+
 const syntheticWordlySolutions = Array.from(
   { length: 80 },
   (_, index) => index === 53 ? "rangiku-matsumoto" : `wordly-character-${index}`
@@ -245,6 +270,26 @@ globalThis.fetch = async url => {
     });
   }
 
+  if (
+    parsed.hostname === "jujutsudle.com" &&
+    parsed.pathname === "/jujutsukaisen.html"
+  ) {
+    return new Response(
+      '<!doctype html><script src="/_next/static/chunks/app/jujutsukaisen/page-test.js"></script>',
+      { status: 200, headers: { "content-type": "text/html" } }
+    );
+  }
+
+  if (
+    parsed.hostname === "jujutsudle.com" &&
+    parsed.pathname === "/_next/static/chunks/app/jujutsukaisen/page-test.js"
+  ) {
+    return new Response(syntheticJujutsudleBundle, {
+      status: 200,
+      headers: { "content-type": "application/javascript" }
+    });
+  }
+
   const match = parsed.pathname.match(/^\/games\/([^/]+)\/answer$/);
 
   if (!match) {
@@ -308,6 +353,18 @@ try {
   assert.equal(wordlySolved.endpointName, "wordly");
   assert.equal(wordlySolved.source, "bleachdle-wordly-bundle");
 
+  const jujutsudleSolved = await solveDirect(jujutsudleClassicUrl, -120);
+  const expectedJujutsudleIndex =
+    currentLocalDayOfYear(-120) % syntheticJujutsudleNames.length;
+  assert.equal(jujutsudleSolved.success, true);
+  assert.equal(
+    jujutsudleSolved.answer,
+    parsedSyntheticJujutsudleNames[expectedJujutsudleIndex]
+  );
+  assert.equal(jujutsudleSolved.mode, "classic");
+  assert.equal(jujutsudleSolved.endpointName, "classic");
+  assert.equal(jujutsudleSolved.source, "jujutsudle-bundle");
+
   const fallback = await solveDirect("https://example.com/classic", -120);
   assert.equal(fallback.fallback, true);
 } finally {
@@ -315,7 +372,7 @@ try {
 }
 
 const directSites = getDirectSites();
-assert.equal(directSites.length, 7);
-assert.equal(directSites.reduce((sum, site) => sum + site.modes.length, 0), 28);
+assert.equal(directSites.length, 8);
+assert.equal(directSites.reduce((sum, site) => sum + site.modes.length, 0), 29);
 
-console.log(`Self-check completato: 28 modalità dirette verificate su ${directSites.length} siti.`);
+console.log(`Self-check completato: 29 modalità dirette verificate su ${directSites.length} siti.`);

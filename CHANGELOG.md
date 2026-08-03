@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.10.0
+
+- Added Jujutsudle Classic as the 29th supported daily riddle and the eighth supported website.
+- Normalized `https://jujutsudle.com/` and `/jujutsukaisen.html` to the same Classic mode.
+- Added a direct adapter that reads the official Next.js character bundle and applies the site's local day-of-year rotation.
+- Added the original Jujutsudle logo and responsive background to all four language pages.
+- Expanded automated checks to eight sites and 29 daily modes.
+
 ## 4.9.0
 
 - Added Bleachdle Wordly as the 28th supported daily riddle.

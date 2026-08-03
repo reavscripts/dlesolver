@@ -1,8 +1,8 @@
-# DLE Solver v4.9
+# DLE Solver v4.10
 
-Solver leggero compatibile con Vercel e Render. Per i sette siti supportati usa direttamente gli endpoint giornalieri e la stessa decifratura CryptoJS della rete DLE; non usa Puppeteer, Playwright o browser headless.
+Solver leggero compatibile con Vercel e Render. Supporta otto siti DLE tramite endpoint giornalieri o adattatori che replicano la rotazione ufficiale; non usa Puppeteer, Playwright o browser headless.
 
-La versione 4.9 include:
+La versione 4.10 include:
 
 - conto alla rovescia prima della visualizzazione della risposta;
 - spazio pubblicitario durante l’attesa;
@@ -23,8 +23,9 @@ La versione 4.9 include:
 - Dotadle: Classic, Quote, Ability, Loading Screen
 - Smashdle: Classic, Final Smash, Kirby, Emoji, Silhouette
 - Bleachdle: Classic, Wordly
+- Jujutsudle: Classic (la modalità usa la home `https://jujutsudle.com/`)
 
-Le prime 26 modalità usano il rispettivo endpoint `/games/<modalità>/answer` e vengono restituite separatamente. Bleachdle Classic usa il bundle JavaScript ufficiale del gioco e applica la selezione basata sul giorno dell’anno. Bleachdle Wordly legge invece il proprio elenco di soluzioni dal bundle `bleachlev2.js` e replica la rotazione giornaliera basata sui giorni trascorsi dal 1° gennaio 2022.
+Le prime 26 modalità usano il rispettivo endpoint `/games/<modalità>/answer` e vengono restituite separatamente. Bleachdle Classic usa il bundle JavaScript ufficiale del gioco e applica la selezione basata sul giorno dell’anno. Bleachdle Wordly legge invece il proprio elenco di soluzioni dal bundle `bleachlev2.js` e replica la rotazione giornaliera basata sui giorni trascorsi dal 1° gennaio 2022. Jujutsudle Classic legge i personaggi dal bundle ufficiale incorporato da `/jujutsukaisen.html` e applica `giorno dell’anno % numero di personaggi`, come il gioco originale.
 
 La modalità Unlimited di Bleachdle non è inclusa perché non è un riddle giornaliero.
 
