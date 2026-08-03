@@ -1,8 +1,8 @@
-# DLE Solver v4.8
+# DLE Solver v4.9
 
 Solver leggero compatibile con Vercel e Render. Per i sette siti supportati usa direttamente gli endpoint giornalieri e la stessa decifratura CryptoJS della rete DLE; non usa Puppeteer, Playwright o browser headless.
 
-La versione 4.8 include:
+La versione 4.9 include:
 
 - conto alla rovescia prima della visualizzazione della risposta;
 - spazio pubblicitario durante l’attesa;
@@ -22,11 +22,11 @@ La versione 4.8 include:
 - Pokédle: Classic, Card, Flavor, Silhouette
 - Dotadle: Classic, Quote, Ability, Loading Screen
 - Smashdle: Classic, Final Smash, Kirby, Emoji, Silhouette
-- Bleachdle: Classic
+- Bleachdle: Classic, Wordly
 
-Le prime 26 modalità usano il rispettivo endpoint `/games/<modalità>/answer` e vengono restituite separatamente. Bleachdle Classic usa invece il bundle JavaScript ufficiale del gioco: il backend legge l’elenco ordinato dei personaggi e applica la stessa selezione basata sul giorno dell’anno usata dal sito.
+Le prime 26 modalità usano il rispettivo endpoint `/games/<modalità>/answer` e vengono restituite separatamente. Bleachdle Classic usa il bundle JavaScript ufficiale del gioco e applica la selezione basata sul giorno dell’anno. Bleachdle Wordly legge invece il proprio elenco di soluzioni dal bundle `bleachlev2.js` e replica la rotazione giornaliera basata sui giorni trascorsi dal 1° gennaio 2022.
 
-La modalità Wordly e la modalità Unlimited di Bleachdle non sono incluse: Unlimited non è un riddle giornaliero e per Wordly serve una cattura HAR separata della relativa pagina.
+La modalità Unlimited di Bleachdle non è inclusa perché non è un riddle giornaliero.
 
 ## Avvio locale
 

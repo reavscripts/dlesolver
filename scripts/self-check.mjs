@@ -6,6 +6,7 @@ import { transformTargetHtml } from "../lib/runtime-proxy.js";
 import {
   decryptCryptoJsOpenSsl,
   extractBleachdleCharacterNames,
+  extractBleachdleWordlyRotation,
   getDirectSites,
   solveDirect
 } from "../lib/direct-solver.js";
@@ -44,8 +45,9 @@ const cases = [
   ["https://smashdle.net/silhouette", "silhouette", "Samus", "fighter_name"]
 ];
 
-const bleachdleUrl = "https://bleachdle.org/";
-const urls = [...cases.map(item => item[0]), bleachdleUrl];
+const bleachdleClassicUrl = "https://bleachdle.org/bleach.html";
+const bleachdleWordlyUrl = "https://bleachdle.org/bleach-wordly.htm";
+const urls = [...cases.map(item => item[0]), bleachdleClassicUrl, bleachdleWordlyUrl];
 const expectedByRequest = new Map();
 for (const [url, endpoint, answer, field] of cases) {
   const target = new URL(url);
@@ -61,7 +63,8 @@ assert.ok(indexHtml.includes("const DIRECT_HOSTS = new Set"));
 assert.ok(indexHtml.includes("narutodle.net"));
 assert.ok(indexHtml.includes("smashdle.net"));
 assert.ok(indexHtml.includes("bleachdle.org"));
-assert.ok(indexHtml.includes('data-url="https://bleachdle.org/"'));
+assert.ok(indexHtml.includes('data-url="https://bleachdle.org/bleach.html"'));
+assert.ok(indexHtml.includes('data-url="https://bleachdle.org/bleach-wordly.htm"'));
 assert.ok(indexHtml.includes('/backgrounds/bleach.webp'));
 assert.ok(indexHtml.includes('/logos/bleachdle.png'));
 assert.ok(indexHtml.includes("<html lang=\"en\">"));
@@ -87,7 +90,8 @@ for (const [language, file, canonical] of localizedPages) {
   assert.ok(html.includes('data-language-code="it"'));
   assert.ok(html.includes('data-language-code="fr"'));
   assert.ok(html.includes('data-language-code="es"'));
-  assert.ok(html.includes('data-url="https://bleachdle.org/"'));
+  assert.ok(html.includes('data-url="https://bleachdle.org/bleach.html"'));
+  assert.ok(html.includes('data-url="https://bleachdle.org/bleach-wordly.htm"'));
   assert.ok(html.includes('/backgrounds/bleach.webp'));
   assert.ok(html.includes('/logos/bleachdle.png'));
   htmlPages.push([language, html]);
@@ -170,6 +174,26 @@ const parsedSyntheticBleachdleNames = extractBleachdleCharacterNames(
 assert.equal(parsedSyntheticBleachdleNames.length, 80);
 assert.equal(parsedSyntheticBleachdleNames[27], "Suì-Fēng");
 
+const syntheticWordlySolutions = Array.from(
+  { length: 80 },
+  (_, index) => index === 53 ? "rangiku-matsumoto" : `wordly-character-${index}`
+);
+const syntheticWordlyBundle =
+  `let w=[${syntheticWordlySolutions.map(solution => `{solution:"${solution}"}`).join(",")}];` +
+  `let daily=function(){var e=new Date(2022,0),t=new Date(e),r=new Date;` +
+  `r.setHours(0,0,0,0);for(var n=0;t<r;)n++,t.setDate(t.getDate()+1);` +
+  `return G((n+-22)%w.length)}();`;
+
+const parsedSyntheticWordly = extractBleachdleWordlyRotation(
+  syntheticWordlyBundle
+);
+assert.equal(parsedSyntheticWordly.solutions.length, 80);
+assert.equal(parsedSyntheticWordly.solutions[53], "rangiku-matsumoto");
+assert.equal(parsedSyntheticWordly.baseYear, 2022);
+assert.equal(parsedSyntheticWordly.baseMonth, 0);
+assert.equal(parsedSyntheticWordly.baseDay, 1);
+assert.equal(parsedSyntheticWordly.dayOffset, -22);
+
 function currentLocalDayOfYear(timezoneOffsetMinutes) {
   const shifted = new Date(Date.now() - timezoneOffsetMinutes * 60_000);
   const year = shifted.getUTCFullYear();
@@ -196,6 +220,26 @@ globalThis.fetch = async url => {
     parsed.pathname === "/_next/static/chunks/app/bleach/page-test.js"
   ) {
     return new Response(syntheticBleachdleBundle, {
+      status: 200,
+      headers: { "content-type": "application/javascript" }
+    });
+  }
+
+  if (
+    parsed.hostname === "bleachdle.org" &&
+    parsed.pathname === "/bleach-wordly.htm"
+  ) {
+    return new Response(
+      '<!doctype html><script defer src="/static/js/bleachlev2.js"></script>',
+      { status: 200, headers: { "content-type": "text/html" } }
+    );
+  }
+
+  if (
+    parsed.hostname === "bleachdle.org" &&
+    parsed.pathname === "/static/js/bleachlev2.js"
+  ) {
+    return new Response(syntheticWordlyBundle, {
       status: 200,
       headers: { "content-type": "application/javascript" }
     });
@@ -234,7 +278,7 @@ try {
     assert.equal(solved.region, "europe", url);
   }
 
-  const bleachdleSolved = await solveDirect(bleachdleUrl, -120);
+  const bleachdleSolved = await solveDirect(bleachdleClassicUrl, -120);
   const expectedBleachdleIndex =
     currentLocalDayOfYear(-120) % syntheticBleachdleNames.length;
   assert.equal(bleachdleSolved.success, true);
@@ -245,6 +289,25 @@ try {
   assert.equal(bleachdleSolved.endpointName, "classic");
   assert.equal(bleachdleSolved.source, "bleachdle-bundle");
 
+  const wordlySolved = await solveDirect(bleachdleWordlyUrl, -120);
+  const shifted = new Date(Date.now() - -120 * 60_000);
+  const elapsedWordlyDays = Math.floor(
+    (Date.UTC(shifted.getUTCFullYear(), shifted.getUTCMonth(), shifted.getUTCDate()) -
+      Date.UTC(2022, 0, 1)) /
+      86_400_000
+  );
+  const expectedWordlyIndex =
+    ((elapsedWordlyDays - 22) % syntheticWordlySolutions.length +
+      syntheticWordlySolutions.length) %
+    syntheticWordlySolutions.length;
+  assert.equal(wordlySolved.success, true);
+  assert.equal(
+    wordlySolved.answer,
+    syntheticWordlySolutions[expectedWordlyIndex].toUpperCase()
+  );
+  assert.equal(wordlySolved.endpointName, "wordly");
+  assert.equal(wordlySolved.source, "bleachdle-wordly-bundle");
+
   const fallback = await solveDirect("https://example.com/classic", -120);
   assert.equal(fallback.fallback, true);
 } finally {
@@ -253,6 +316,6 @@ try {
 
 const directSites = getDirectSites();
 assert.equal(directSites.length, 7);
-assert.equal(directSites.reduce((sum, site) => sum + site.modes.length, 0), 27);
+assert.equal(directSites.reduce((sum, site) => sum + site.modes.length, 0), 28);
 
-console.log(`Self-check completato: 27 modalità dirette verificate su ${directSites.length} siti.`);
+console.log(`Self-check completato: 28 modalità dirette verificate su ${directSites.length} siti.`);

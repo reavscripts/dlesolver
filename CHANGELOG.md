@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.9.0
+
+- Added Bleachdle Wordly as the 28th supported daily riddle.
+- Added a dedicated parser for the 80 Wordly solutions and the official daily rotation formula from `bleachlev2.js`.
+- Changed the Bleachdle Classic example URL from the wrapper home page to `https://bleachdle.org/bleach.html`.
+- Added the exact Wordly URL `https://bleachdle.org/bleach-wordly.htm` to all four language pages.
+- Expanded automated checks to seven sites and 28 daily modes.
+- Kept Bleachdle Unlimited disabled because it is not a daily riddle.
+
 ## 4.8.0
 
 - Added Bleachdle Classic as the 27th supported daily riddle.

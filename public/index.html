@@ -1002,7 +1002,8 @@
         <article class="site-card">
           <div class="site-title"><span>Bleachdle</span><span class="site-domain">bleachdle.org</span></div>
           <div class="link-list">
-            <a class="example" href="#" data-url="https://bleachdle.org/">Classic</a>
+            <a class="example" href="#" data-url="https://bleachdle.org/bleach.html">Classic</a>
+            <a class="example" href="#" data-url="https://bleachdle.org/bleach-wordly.htm">Wordly</a>
           </div>
         </article>
       </div>
@@ -1033,7 +1034,7 @@
       </div>
     </section>
 
-    <footer>DLE Solver · v4.8.0</footer>
+    <footer>DLE Solver · v4.9.0</footer>
   </main>
 
   <dialog id="premiumDialog" class="premium-dialog" aria-labelledby="premiumTitle">
@@ -1247,8 +1248,14 @@
     }
 
     function requestedMode() {
-      try { return normalizeMode(new URL(activeUrl).pathname) || "classic"; }
-      catch (_) { return "classic"; }
+      try {
+        const mode = normalizeMode(new URL(activeUrl).pathname) || "classic";
+        if (mode === "bleachwordlyhtm" || mode === "bleachwordlyhtml") return "wordly";
+        if (mode === "bleachhtml") return "classic";
+        return mode;
+      } catch (_) {
+        return "classic";
+      }
     }
 
     function modeFromText(...values) {
@@ -1275,7 +1282,7 @@
       const known = [
         "classic", "quote", "ability", "emoji", "splash", "card", "flavor",
         "silhouette", "jutsu", "eye", "devilfruit", "wanted", "laugh",
-        "loadingscreen", "finalsmash", "kirby"
+        "loadingscreen", "finalsmash", "kirby", "wordly"
       ];
 
       for (const mode of known) {

@@ -1,6 +1,6 @@
 {
   "name": "dle-solver",
-  "version": "4.8.0",
+  "version": "4.9.0",
   "private": true,
   "type": "module",
   "description": "Direct daily solver for seven DLE websites with multilingual UI, PayPal Premium and server-side answer gating.",
