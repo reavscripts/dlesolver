@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.12.0
+
+- Added Jujutsudle Wordly as the 31st supported daily riddle.
+- Added a dedicated adapter for `https://jujutsudle.com/jujutsu-wordly.htm` that reads the official `jujutsudlev2.js` solution list.
+- Matched the game's local calendar rotation and kept its cache isolated from Jujutsudle Classic and Jujutsu Point.
+- Added Wordly links to all four language pages and expanded automated checks to 31 modes.
+
 ## 4.11.0
 
 - Added Jujutsu Point as the 30th supported daily riddle.
