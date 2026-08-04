@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Find today’s answer for 53 daily modes across 16 DLE games, including anime, Pokémon, LoL, Dota and Smash.">
+  <meta name="description" content="Find today’s exact answer for 63 daily modes across 20 DLE games and riddle websites, including Riddles.com and RiddleDay.">
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
   <meta name="theme-color" content="#060812">
   <meta name="google-adsense-account" content="ca-pub-1414083636493759">
@@ -19,15 +19,15 @@
   <meta property="og:locale:alternate" content="it_IT">
   <meta property="og:locale:alternate" content="fr_FR">
   <meta property="og:locale:alternate" content="es_ES">
-<meta property="og:title" content="DLE Solver – Daily answers for DLE games">
-  <meta property="og:description" content="One daily-game hub for 53 modes across 16 supported DLE games.">
+<meta property="og:title" content="DLE Solver – Daily game and riddle answers">
+  <meta property="og:description" content="One daily-game and riddle hub for 63 modes across 20 supported websites.">
   <meta property="og:url" content="https://dlesolver.reav.website/">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="DLE Solver – Daily answers for DLE games">
+  <meta name="twitter:title" content="DLE Solver – Daily game and riddle answers">
   <meta name="twitter:description" content="Quickly find today's answer for the most popular DLE games.">
-  <title>DLE Solver – Daily OnePieceDle, Narutodle, LoLdle and more answers</title>
+  <title>DLE Solver – Daily DLE game and riddle answers</title>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"WebApplication","name":"DLE Solver","url":"https://dlesolver.reav.website/","applicationCategory":"GameApplication","operatingSystem":"Any web browser","inLanguage":"en","description":"Daily-game hub for finding today’s answer across 53 modes and 16 supported DLE games.","isAccessibleForFree":true}
+  {"@context":"https://schema.org","@type":"WebApplication","name":"DLE Solver","url":"https://dlesolver.reav.website/","applicationCategory":"GameApplication","operatingSystem":"Any web browser","inLanguage":"en","description":"Daily-game and riddle hub for finding today’s exact answer across 63 modes and 20 supported websites.","isAccessibleForFree":true}
   </script>
   <script>
     (() => {
@@ -861,8 +861,8 @@
       .premium-trigger { flex: 0 0 auto; }
     }
   </style>
-  <link rel="stylesheet" href="/ui-v6.css?v=5.2.0">
-  <script src="/ui-v6.js?v=5.2.0" defer></script>
+  <link rel="stylesheet" href="/ui-v6.css?v=5.3.0">
+  <script src="/ui-v6.js?v=5.3.0" defer></script>
 
 <body data-language="en">
   <div id="backgroundLayerA" class="background-layer" aria-hidden="true"></div>
@@ -901,8 +901,8 @@
 
     <header id="hero" class="hero">
       <div id="heroIntro" class="hero-intro">
-        <div class="hero-eyebrow"><span class="live-dot" aria-hidden="true"></span>Live daily rotations · 53 modes</div>
-        <h1>Today’s DLE answer, in one link.</h1>
+        <div class="hero-eyebrow"><span class="live-dot" aria-hidden="true"></span>Live daily rotations · 63 modes</div>
+        <h1>Today’s game or riddle answer, in one link.</h1>
         <p>Paste any supported game URL. The solver detects the site and daily mode automatically.</p>
       </div>
       <div id="siteLogoShell" class="site-logo-shell" aria-live="polite">
@@ -945,7 +945,12 @@
     <section class="tutorial">
       <div class="section-head">
         <div class="section-heading-group"><span class="section-kicker">Game library</span><h2>Choose your daily game</h2></div>
-        <p>Pick a mode to load its exact URL.<span class="catalog-count">16 games · 53 modes</span></p>
+        <p>Pick a mode to load its exact URL.<span class="catalog-count">20 websites · 63 modes</span></p>
+      </div>
+
+      <div class="catalog-group-head catalog-group-head-first">
+        <div class="catalog-group-copy"><h3>DLE &amp; character games</h3><p>Daily characters, words, quotes, abilities and visual clues.</p></div>
+        <span class="catalog-group-count">16 websites · 53 modes</span>
       </div>
 
       <div class="site-grid">
@@ -1099,6 +1104,43 @@
         </article>
       </div>
 
+      <div class="catalog-group-head">
+        <div class="catalog-group-copy"><h3>Daily riddles &amp; brain teasers</h3><p>Public daily rotations and exact-answer riddle pages.</p></div>
+        <span class="catalog-group-count">4 websites · 10 modes</span>
+      </div>
+
+      <div class="site-grid riddle-grid">
+        <article class="site-card" data-riddle-site="riddles" data-mark="?">
+          <div class="site-title"><span>Riddles.com</span><span class="site-domain">riddles.com</span></div>
+          <div class="link-list">
+            <a class="example" href="#" data-url="https://www.riddles.com/riddle-of-the-day">Riddle of the Day</a>
+            <a class="example" href="#" data-url="https://www.riddles.com/games/rirdle.html">RiRdle</a>
+          </div>
+        </article>
+
+        <article class="site-card" data-riddle-site="riddleday" data-mark="◇">
+          <div class="site-title"><span>RiddleDay</span><span class="site-domain">riddledays.com</span></div>
+          <div class="link-list">
+            <a class="example" href="#" data-url="https://riddledays.com/?mode=adults&amp;level=easy">Adults · Easy</a>
+            <a class="example" href="#" data-url="https://riddledays.com/?mode=adults&amp;level=medium">Adults · Medium</a>
+            <a class="example" href="#" data-url="https://riddledays.com/?mode=adults&amp;level=hard">Adults · Hard</a>
+            <a class="example" href="#" data-url="https://riddledays.com/?mode=kids&amp;level=easy">Kids · Easy</a>
+            <a class="example" href="#" data-url="https://riddledays.com/?mode=kids&amp;level=medium">Kids · Medium</a>
+            <a class="example" href="#" data-url="https://riddledays.com/?mode=kids&amp;level=hard">Kids · Hard</a>
+          </div>
+        </article>
+
+        <article class="site-card" data-riddle-site="riddletime" data-mark="⌛">
+          <div class="site-title"><span>Riddle Time</span><span class="site-domain">riddletime.co</span></div>
+          <div class="link-list"><a class="example" href="#" data-url="https://www.riddletime.co/daily">Daily Riddle</a></div>
+        </article>
+
+        <article class="site-card" data-riddle-site="riddlecafe" data-mark="☕">
+          <div class="site-title"><span>Riddle Cafe</span><span class="site-domain">triviacafe.com/riddles</span></div>
+          <div class="link-list"><a class="example" href="#" data-url="https://triviacafe.com/riddles">Daily Riddle</a></div>
+        </article>
+      </div>
+
       <div class="tip">
         <span aria-hidden="true">↗</span>
         <span><strong>How to copy it:</strong> open the game mode in your browser and copy the full address from the address bar.</span>
@@ -1107,12 +1149,12 @@
 
 
     <section class="seo-section" aria-labelledby="seoTitle">
-      <h2 id="seoTitle">Solve daily DLE riddles in a few steps</h2>
-      <p>DLE Solver supports 53 daily modes across 16 DLE websites, including OnePieceDle, Narutodle, Bleachdle, Jujutsudle, Kimetsudle, Jojodle, Bluelockdle, Genshindle, Animedle, OPMdle and Pokentions. Paste the game-mode URL and the solver finds today's answer.</p>
+      <h2 id="seoTitle">Solve daily DLE games and riddles in a few steps</h2>
+      <p>DLE Solver supports 63 daily modes across 20 websites, from character-based DLE games to Riddles.com, RiddleDay, Riddle Time and Riddle Cafe. Paste the game or riddle URL and the solver finds today's exact answer.</p>
       <div class="seo-grid">
         <article class="seo-item">
-          <h3>16 supported websites</h3>
-          <p>One tool for popular DLE games based on anime, Pokémon, League of Legends, Dota 2 and Super Smash Bros.</p>
+          <h3>20 supported websites</h3>
+          <p>One tool for popular DLE games and daily riddle hubs, organized into two clear families.</p>
         </article>
         <article class="seo-item">
           <h3>Today’s answer</h3>
@@ -1125,7 +1167,7 @@
       </div>
     </section>
 
-    <footer>DLE Solver · v5.2.0</footer>
+    <footer>DLE Solver · v5.3.0</footer>
   </main>
 
   <dialog id="premiumDialog" class="premium-dialog" aria-labelledby="premiumTitle">
@@ -2218,7 +2260,12 @@
       "genshindle.org",
       "animedle.org",
       "opmdle.com",
-      "pokedoku.org"
+      "pokedoku.org",
+      "riddles.com",
+      "riddledays.com",
+      "riddletime.co",
+      "riddlecafe.com",
+      "triviacafe.com"
     ]);
 
     async function tryDirectSolver() {

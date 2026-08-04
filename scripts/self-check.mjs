@@ -13,7 +13,12 @@ import {
   extractJujutsudleCharacterNames,
   extractJujutsudleWordlyRotation,
   extractJujutsupointPuzzle,
+  extractJsonLdRiddle,
+  extractNextRiddle,
   extractPublisherCharacterNames,
+  extractRiddleDayRotation,
+  extractRiddlesComAnswer,
+  extractRirdleRotation,
   extractSeededAbility,
   extractTimestampWordRotation,
   getDirectSites,
@@ -83,6 +88,18 @@ const publisherCases = [
   ["https://opmdle.com/one-punch-man-wordly.htm", "wordly", "publisher-wordly-bundle"],
   ["https://pokedoku.org/pokentions/", "daily", "pokentions-connections-json"]
 ];
+const riddleCases = [
+  ["https://www.riddles.com/riddle-of-the-day", "daily", "riddles-daily-html"],
+  ["https://www.riddles.com/games/rirdle.html", "rirdle", "riddles-rirdle-inline"],
+  ["https://riddledays.com/?mode=adults&level=easy", "adultseasy", "riddleday-inline-rotation"],
+  ["https://riddledays.com/?mode=adults&level=medium", "adultsmedium", "riddleday-inline-rotation"],
+  ["https://riddledays.com/?mode=adults&level=hard", "adultshard", "riddleday-inline-rotation"],
+  ["https://riddledays.com/?mode=kids&level=easy", "kidseasy", "riddleday-inline-rotation"],
+  ["https://riddledays.com/?mode=kids&level=medium", "kidsmedium", "riddleday-inline-rotation"],
+  ["https://riddledays.com/?mode=kids&level=hard", "kidshard", "riddleday-inline-rotation"],
+  ["https://www.riddletime.co/daily", "daily", "riddletime-next-data"],
+  ["https://triviacafe.com/riddles", "daily", "riddlecafe-jsonld"]
+];
 const urls = [
   ...cases.map(item => item[0]),
   bleachdleClassicUrl,
@@ -90,7 +107,8 @@ const urls = [
   jujutsudleClassicUrl,
   jujutsupointUrl,
   jujutsudleWordlyUrl,
-  ...publisherCases.map(item => item[0])
+  ...publisherCases.map(item => item[0]),
+  ...riddleCases.map(item => item[0])
 ];
 const expectedByRequest = new Map();
 for (const [url, endpoint, answer, field] of cases) {
@@ -103,7 +121,8 @@ const indexHtml = await readFile(new URL("../public/index.html", import.meta.url
 const uiCss = await readFile(new URL("../public/ui-v6.css", import.meta.url), "utf8");
 const uiJs = await readFile(new URL("../public/ui-v6.js", import.meta.url), "utf8");
 for (const url of urls) {
-  assert.ok(indexHtml.includes(`data-url="${url}"`), `Link esempio mancante: ${url}`);
+  const serializedUrl = url.replaceAll("&", "&amp;");
+  assert.ok(indexHtml.includes(`data-url="${serializedUrl}"`), `Link esempio mancante: ${url}`);
 }
 assert.ok(indexHtml.includes("const DIRECT_HOSTS = new Set"));
 assert.ok(indexHtml.includes("narutodle.net"));
@@ -138,23 +157,32 @@ assert.ok(indexHtml.includes('hreflang="fr" href="https://dlesolver.reav.website
 assert.ok(indexHtml.includes('hreflang="es" href="https://dlesolver.reav.website/es/"'));
 assert.ok(indexHtml.includes('navigator.languages'));
 assert.ok(indexHtml.includes('dleLanguagePreference'));
-assert.ok(indexHtml.includes('<link rel="stylesheet" href="/ui-v6.css?v=5.2.0">'));
-assert.ok(indexHtml.includes('<script src="/ui-v6.js?v=5.2.0" defer></script>'));
+assert.ok(indexHtml.includes('<link rel="stylesheet" href="/ui-v6.css?v=5.3.0">'));
+assert.ok(indexHtml.includes('<script src="/ui-v6.js?v=5.3.0" defer></script>'));
 assert.ok(indexHtml.includes('id="dockedSolverForm"'));
 assert.ok(indexHtml.includes('class="hero-eyebrow"'));
 assert.ok(indexHtml.includes('class="solver-card-head"'));
 assert.ok(indexHtml.includes('class="catalog-count"'));
-assert.ok(indexHtml.includes('DLE Solver · v5.2.0'));
+assert.ok(indexHtml.includes('DLE Solver · v5.3.0'));
+assert.ok(indexHtml.includes('class="site-grid riddle-grid"'));
+assert.ok(indexHtml.includes('20 websites · 63 modes'));
 assert.ok(uiCss.includes("grid-template-columns: repeat(3, minmax(0, 1fr))"));
 assert.ok(uiCss.includes('.site-card:nth-child(16)'));
+assert.ok(uiCss.includes('.riddle-grid'));
+assert.ok(uiCss.includes('.site-card[data-riddle-site="riddles"]'));
+assert.ok(uiCss.includes('.catalog-group-head'));
 assert.ok(uiCss.includes('@media (max-width: 560px)'));
 assert.ok(uiCss.includes('@media (prefers-reduced-motion: reduce)'));
 assert.ok(uiCss.includes('background-size: cover'));
 assert.ok(uiCss.includes('body.solver-docked .topbar-solver'));
+assert.ok(uiCss.includes('body.solver-merging .topbar'));
 assert.ok(uiCss.includes('.topbar-solver-status'));
+assert.ok(uiCss.includes('--solver-bridge-width'));
 assert.ok(uiJs.includes('primaryForm.requestSubmit()'));
 assert.ok(uiJs.includes('solverCard.scrollIntoView'));
 assert.ok(uiJs.includes('window.matchMedia("(min-width: 561px)"'));
+assert.ok(uiJs.includes('function setMergeVisuals(progress)'));
+assert.ok(uiJs.includes('Math.sin(Math.PI * progress)'));
 
 const localizedPages = [
   ["it", "../public/it/index.html", "https://dlesolver.reav.website/it/"],
@@ -180,19 +208,21 @@ for (const [language, file, canonical] of localizedPages) {
   assert.ok(html.includes('data-url="https://jujutsudle.com/jujutsu-wordly.htm"'));
   assert.ok(html.includes('/backgrounds/jujutsudle.webp'));
   assert.ok(html.includes('/logos/jujutsudle.webp'));
-  for (const [url] of publisherCases) {
-    assert.ok(html.includes(`data-url="${url}"`), `Link ${language} mancante: ${url}`);
+  for (const [url] of [...publisherCases, ...riddleCases]) {
+    const serializedUrl = url.replaceAll("&", "&amp;");
+    assert.ok(html.includes(`data-url="${serializedUrl}"`), `Link ${language} mancante: ${url}`);
   }
   assert.ok(html.includes('/backgrounds/animedle-onepiece.webp'));
   assert.ok(html.includes('/backgrounds/animedle-dragonball.jpg'));
   assert.ok(html.includes('/logos/pokentions.png'));
-  assert.ok(html.includes('<link rel="stylesheet" href="/ui-v6.css?v=5.2.0">'));
-  assert.ok(html.includes('<script src="/ui-v6.js?v=5.2.0" defer></script>'));
+  assert.ok(html.includes('<link rel="stylesheet" href="/ui-v6.css?v=5.3.0">'));
+  assert.ok(html.includes('<script src="/ui-v6.js?v=5.3.0" defer></script>'));
   assert.ok(html.includes('id="dockedSolverForm"'));
   assert.ok(html.includes('class="hero-eyebrow"'));
   assert.ok(html.includes('class="solver-card-head"'));
   assert.ok(html.includes('class="catalog-count"'));
-  assert.ok(html.includes('DLE Solver · v5.2.0'));
+  assert.ok(html.includes('DLE Solver · v5.3.0'));
+  assert.ok(html.includes('class="site-grid riddle-grid"'));
   htmlPages.push([language, html]);
 }
 
@@ -421,6 +451,69 @@ const parsedSyntheticConnections = extractConnectionsPuzzle(
 assert.equal(parsedSyntheticConnections.groups.length, 4);
 assert.ok(parsedSyntheticConnections.answer.includes("Theme 4: Pokemon 4-1"));
 
+const syntheticRirdlePuzzles = Array.from({ length: 12 }, (_, index) => ({
+  riddle: `RiRdle question ${index}`,
+  answer: `RIRDLE ANSWER ${index}`
+}));
+const syntheticRirdleHtml = `<script>const dailyPuzzles = ${JSON.stringify(syntheticRirdlePuzzles)};</script>`;
+const parsedSyntheticRirdle = extractRirdleRotation(syntheticRirdleHtml);
+assert.equal(parsedSyntheticRirdle.puzzles.length, 12);
+assert.equal(parsedSyntheticRirdle.puzzles[4].answer, "RIRDLE ANSWER 4");
+
+const syntheticRiddleDayCatalog = Object.fromEntries(
+  ["kids", "adults"].map(audience => [
+    audience,
+    Object.fromEntries(
+      ["easy", "medium", "hard"].map(level => [
+        level,
+        Array.from({ length: 12 }, (_, index) => ({
+          q: `${audience} ${level} question ${index}`,
+          a: `${audience} ${level} answer ${index}`,
+          hints: []
+        }))
+      ])
+    )
+  ])
+);
+const syntheticRiddleDayHtml = `<script>const RIDDLES = ${JSON.stringify(syntheticRiddleDayCatalog)};</script>`;
+const parsedSyntheticRiddleDay = extractRiddleDayRotation(
+  syntheticRiddleDayHtml,
+  "kids",
+  "hard"
+);
+assert.equal(parsedSyntheticRiddleDay.puzzles.length, 12);
+assert.equal(parsedSyntheticRiddleDay.puzzles[7].answer, "kids hard answer 7");
+
+const syntheticRiddlesDailyHtml = `
+  <span>ROD: 08-04-2026</span>
+  <div class="collapse" id="collapse2821">
+    <strong class="dark_purple">Answer</strong>: Nobody &amp; everybody.<br>Source: https://www.riddles.com/2821
+    <div class="share">Share</div>
+  </div>`;
+const parsedSyntheticRiddlesDaily = extractRiddlesComAnswer(syntheticRiddlesDailyHtml);
+assert.equal(parsedSyntheticRiddlesDaily.answer, "Nobody & everybody.");
+assert.equal(parsedSyntheticRiddlesDaily.id, 2821);
+assert.equal(parsedSyntheticRiddlesDaily.date, "08-04-2026");
+
+const syntheticNextRiddleHtml = JSON.stringify({
+  question: "What ends with W?",
+  answer: "A rainbow"
+});
+assert.equal(extractNextRiddle(syntheticNextRiddleHtml).answer, "A rainbow");
+
+const syntheticJsonLdRiddleHtml = `<script type="application/ld+json">${JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [{
+    "@type": "Question",
+    name: "What gets wetter?",
+    acceptedAnswer: { "@type": "Answer", text: "A &lt;towel&gt;" }
+  }]
+})}</script>`;
+const parsedSyntheticJsonLd = extractJsonLdRiddle(syntheticJsonLdRiddleHtml);
+assert.equal(parsedSyntheticJsonLd.question, "What gets wetter?");
+assert.equal(parsedSyntheticJsonLd.answer, "A <towel>");
+
 function currentLocalDayOfYear(timezoneOffsetMinutes) {
   const shifted = new Date(Date.now() - timezoneOffsetMinutes * 60_000);
   const year = shifted.getUTCFullYear();
@@ -604,6 +697,47 @@ globalThis.fetch = async url => {
     return new Response(syntheticJujutsudleWordlyBundle, {
       status: 200,
       headers: { "content-type": "application/javascript" }
+    });
+  }
+
+  if (
+    ["riddles.com", "www.riddles.com"].includes(parsed.hostname) &&
+    ["/riddle-of-the-day", "/2821"].includes(parsed.pathname)
+  ) {
+    return new Response(syntheticRiddlesDailyHtml, {
+      status: 200,
+      headers: { "content-type": "text/html" }
+    });
+  }
+
+  if (
+    ["riddles.com", "www.riddles.com"].includes(parsed.hostname) &&
+    parsed.pathname === "/games/rirdle.html"
+  ) {
+    return new Response(syntheticRirdleHtml, {
+      status: 200,
+      headers: { "content-type": "text/html" }
+    });
+  }
+
+  if (parsed.hostname === "riddledays.com" && parsed.pathname === "/") {
+    return new Response(syntheticRiddleDayHtml, {
+      status: 200,
+      headers: { "content-type": "text/html" }
+    });
+  }
+
+  if (parsed.hostname === "riddletime.co" && parsed.pathname === "/daily") {
+    return new Response(syntheticNextRiddleHtml, {
+      status: 200,
+      headers: { "content-type": "text/html" }
+    });
+  }
+
+  if (parsed.hostname === "triviacafe.com" && parsed.pathname === "/riddles") {
+    return new Response(syntheticJsonLdRiddleHtml, {
+      status: 200,
+      headers: { "content-type": "text/html" }
     });
   }
 
@@ -809,6 +943,32 @@ try {
     }
   }
 
+  for (const [url, expectedMode, expectedSource] of riddleCases) {
+    const solved = await solveDirect(url, -120);
+    assert.equal(solved.success, true, url);
+    assert.equal(solved.mode, expectedMode, url);
+    assert.equal(solved.endpointName, expectedMode, url);
+    assert.equal(solved.source, expectedSource, url);
+    assert.ok(solved.answer, url);
+
+    if (expectedSource === "riddles-daily-html") {
+      assert.equal(solved.answer, "Nobody & everybody.", url);
+      assert.equal(solved.gameNumero, 2821, url);
+    } else if (expectedSource === "riddletime-next-data") {
+      assert.equal(solved.answer, "A rainbow", url);
+    } else if (expectedSource === "riddlecafe-jsonld") {
+      assert.equal(solved.answer, "A <towel>", url);
+    } else {
+      assert.ok(solved.question, url);
+    }
+  }
+
+  const archivedRiddle = await solveDirect("https://www.riddles.com/2821", -120);
+  assert.equal(archivedRiddle.success, true);
+  assert.equal(archivedRiddle.mode, "library");
+  assert.equal(archivedRiddle.answer, "Nobody & everybody.");
+  assert.equal(archivedRiddle.source, "riddles-page-html");
+
   const fallback = await solveDirect("https://example.com/classic", -120);
   assert.equal(fallback.fallback, true);
 } finally {
@@ -816,7 +976,7 @@ try {
 }
 
 const directSites = getDirectSites();
-assert.equal(directSites.length, 16);
-assert.equal(directSites.reduce((sum, site) => sum + site.modes.length, 0), 53);
+assert.equal(directSites.length, 20);
+assert.equal(directSites.reduce((sum, site) => sum + site.modes.length, 0), 63);
 
-console.log(`Self-check completato: 53 modalità dirette verificate su ${directSites.length} siti.`);
+console.log(`Self-check completato: 63 modalità dirette verificate su ${directSites.length} siti.`);

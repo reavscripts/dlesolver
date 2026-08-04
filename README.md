@@ -1,8 +1,12 @@
-# DLE Solver v5.2
+# DLE Solver v5.3
 
-Solver leggero compatibile con Vercel e Render. Supporta 53 modalità giornaliere su 16 siti DLE tramite endpoint o adattatori che replicano la rotazione ufficiale; non usa Puppeteer, Playwright o browser headless.
+Solver leggero compatibile con Vercel e Render. Supporta 63 modalità giornaliere su 20 siti DLE e aggregatori di indovinelli tramite endpoint o adattatori che replicano la rotazione ufficiale; non usa Puppeteer, Playwright o browser headless.
 
-La versione 5.2 include:
+La versione 5.3 include:
+
+- catalogo diviso in modo chiaro tra giochi DLE/personaggi e indovinelli giornalieri;
+- supporto a Riddles.com, RiddleDay, Riddle Time e Riddle Cafe;
+- lettura delle singole pagine numeriche dell’archivio Riddles.com oltre alle dieci nuove modalità giornaliere;
 
 - conto alla rovescia prima della visualizzazione della risposta;
 - spazio pubblicitario durante l’attesa;
@@ -36,8 +40,12 @@ La versione 5.2 include:
 - Animedle Dragonballdle: Classic, Wordly
 - OPMdle: Classic, Wordly
 - Pokentions: Daily Connections
+- Riddles.com: Riddle of the Day, RiRdle e pagine numeriche dell’archivio
+- RiddleDay: Adults/Kids nei livelli Easy, Medium e Hard
+- Riddle Time: Daily Riddle
+- Riddle Cafe: Daily Riddle
 
-Le prime 26 modalità usano il rispettivo endpoint `/games/<modalità>/answer`. Gli altri adattatori leggono esclusivamente dati e bundle pubblici dei giochi e replicano la loro logica giornaliera: giorno dell’anno per i Classic, archivi datati per le modalità Point, rotazioni Wordly, archivi di frasi per Uzumakidle e Joestardle, seed giornaliero per Genshinle Daily e numero progressivo per Pokentions.
+Le prime 26 modalità usano il rispettivo endpoint `/games/<modalità>/answer`. Gli altri adattatori leggono esclusivamente dati, pagine e bundle pubblici e replicano la loro logica giornaliera: giorno dell’anno per i Classic, archivi datati per le modalità Point, rotazioni Wordly e riddle, archivi di frasi per Uzumakidle e Joestardle, seed giornaliero per Genshinle Daily e numero progressivo per Pokentions.
 
 Genshindle e OPMdle includono inoltre una copia locale verificata dei dati di rotazione: viene usata automaticamente soltanto quando il sito originale blocca le richieste provenienti dalla rete di deployment.
 

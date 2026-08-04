@@ -1,9 +1,9 @@
 {
   "name": "dle-solver",
-  "version": "5.2.0",
+  "version": "5.3.0",
   "private": true,
   "type": "module",
-  "description": "Direct daily solver for 16 DLE websites and 53 modes with multilingual UI, PayPal Premium and server-side answer gating.",
+  "description": "Direct daily solver for 20 DLE and riddle websites across 63 modes, with multilingual UI, Premium and server-side answer gating.",
   "engines": {
     "node": ">=20"
   },

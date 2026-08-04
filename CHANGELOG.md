@@ -1,5 +1,21 @@
 # Changelog
 
+## 5.3.0
+
+- Expanded direct support from 16 websites and 53 modes to 20 websites and 63 daily modes.
+- Added Riddles.com Riddle of the Day, RiRdle and direct extraction from numeric archive pages.
+- Added all six RiddleDay rotations for adults and kids across easy, medium and hard difficulty.
+- Added Riddle Time daily answers from its public page data and Riddle Cafe answers from its structured FAQ data.
+- Split the multilingual catalog into DLE/character games and daily riddle hubs, with dedicated responsive cards.
+- Added reusable parsers for inline riddle rotations, HTML answer panels, Next.js page data and JSON-LD questions.
+
+## 5.2.1
+
+- Reworked the docked-search transition as a scroll-linked liquid merge between the main solver panel and the floating top bar.
+- Added a shrinking droplet shell, a soft connecting bridge and a progressive reveal of the compact search field.
+- Covered the sticky top gap during the merge so the original form no longer leaves visible fragments behind.
+- Preserved the existing mobile cutoff, keyboard behavior and reduced-motion fallback.
+
 ## 5.2.0
 
 - Added a compact search field that docks into the floating top bar after the main solver panel leaves the viewport.
